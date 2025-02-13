@@ -1,6 +1,8 @@
 function NavbarBrand() {
   return (
-    <a className="navbar-brand" href="#">Navbar scroll</a>
+    <a className="navbar-brand" href="#">
+      <img src="/logo.png" alt="Logo" style={{ height: '100px' }} /> {/* Adjust the height as needed */}
+    </a>
   );
 }
 
@@ -14,18 +16,18 @@ function NavbarToggler() {
 
 function NavbarNav() {
   return (
-    <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style={{ '--bs-scroll-height': '100px' }}>
+    <ul className="navbar-nav mx-auto my-2 my-lg-0" style={{ '--bs-scroll-height': '100px' }}>
       <li className="nav-item">
         <a className="nav-link active" aria-current="page" href="#">Home</a>
       </li>
       <li className="nav-item">
-        <a className="nav-link" href="#">Recipes</a>
+        <a className="nav-link" href="#">About Us</a>
       </li>
       <li className="nav-item">
-        <a className="nav-link" aria-disabled="true" href="#">Meal Plan</a>
+        <a className="nav-link" aria-disabled="true" href="#">Services</a>
       </li>
       <li className="nav-item">
-        <a className="nav-link" aria-disabled="true" href="#">Grocery List</a>
+        <a className="nav-link" aria-disabled="true" href="#">Contact</a>
       </li>
     </ul>
   );
@@ -33,11 +35,12 @@ function NavbarNav() {
 
 function NavbarDropdown() {
   return (
-    <li className="nav-item dropdown custom-margin-right">
-      <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Link
+    <li className="nav-item dropdown">
+      <a className="nav-link dropdown-toggle px-3 py-2 rounded" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+        style={{ backgroundColor: "black", color: "white", borderRadius: "8px" }}>
+        Profile
       </a>
-      <ul className="dropdown-menu">
+      <ul className="dropdown-menu dropdown-menu-end">
         <li><a className="dropdown-item" href="#">Profile</a></li>
         <li><a className="dropdown-item" href="#">Settings</a></li>
         <li><hr className="dropdown-divider" /></li>
@@ -47,25 +50,18 @@ function NavbarDropdown() {
   );
 }
 
-function NavbarSearch() {
-  return (
-    <form className="d-flex me-5" role="search"> {/* Added me-3 class for margin */}
-      <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-      <button className="btn btn-outline-success" type="submit">Search</button>
-    </form>
-  );
-}
-
 function Header() {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg">
       <div className="container-fluid">
         <NavbarBrand />
         <NavbarToggler />
         <div className="collapse navbar-collapse" id="navbarScroll">
-          <NavbarNav />
+          {/* New div to handle alignment */}
+          <div className="d-flex w-100 justify-content-center">
+            <NavbarNav />
+          </div>
           <div className="d-flex ms-auto">
-            <NavbarSearch />
             <ul className="navbar-nav">
               <NavbarDropdown />
             </ul>
@@ -75,5 +71,6 @@ function Header() {
     </nav>
   );
 }
+
 
 export default Header;
