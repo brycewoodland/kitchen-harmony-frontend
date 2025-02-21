@@ -16,7 +16,7 @@ function NavbarToggler() {
 
 function NavbarNav() {
   return (
-    <ul className="navbar-nav mx-auto my-2 my-lg-0" style={{ '--bs-scroll-height': '100px' }}>
+    <ul className="navbar-nav mx-auto justify-content-center">
       <li className="nav-item">
         <a className="nav-link active" aria-current="page" href="#">Home</a>
       </li>
@@ -35,12 +35,12 @@ function NavbarNav() {
 
 function NavbarDropdown() {
   return (
-    <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle px-3 py-2 rounded" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+    <li className="nav-item dropdown w-100 w-lg-auto"> {/* Added w-100 for small screens and w-lg-auto for larger screens */}
+      <a className="nav-link dropdown-toggle px-3 py-2 rounded w-100 text-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
         style={{ backgroundColor: "black", color: "white", borderRadius: "8px" }}>
         Profile
       </a>
-      <ul className="dropdown-menu dropdown-menu-end">
+      <ul className="dropdown-menu dropdown-menu-end w-100"> {/* Added w-100 to make the dropdown span the full width */}
         <li><a className="dropdown-item" href="#">Profile</a></li>
         <li><a className="dropdown-item" href="#">Settings</a></li>
         <li><hr className="dropdown-divider" /></li>
@@ -57,7 +57,6 @@ function Header() {
         <NavbarBrand />
         <NavbarToggler />
         <div className="collapse navbar-collapse" id="navbarScroll">
-          {/* New div to handle alignment */}
           <div className="d-flex w-100 justify-content-center">
             <NavbarNav />
           </div>
@@ -71,6 +70,5 @@ function Header() {
     </nav>
   );
 }
-
 
 export default Header;
