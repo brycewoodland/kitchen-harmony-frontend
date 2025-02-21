@@ -1,3 +1,47 @@
 .custom-margin-right {
     margin-right: 6rem;
 }
+
+/* Fade-in animation for the hero image */
+.hero-image img {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Slide-in animation for the heading */
+  .hero-heading {
+    transform: translateY(-50px);
+    opacity: 0;
+    animation: slideIn 1s forwards;
+  }
+  
+  @keyframes slideIn {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Button hover animation */
+  .hero-button {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .hero-button:hover {
+    transform: scale(1.1);
+  }
+
+/* CookSection.css */
+.img-hover-zoom {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .img-hover-zoom:hover {
+    transform: scale(1.1);
+  }

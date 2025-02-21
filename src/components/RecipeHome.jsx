@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 function RecipeSection({ title, summary }) {
     return (
-      <div className="col-md-4" style={{ marginTop: '20px' }}>
+      <div className="col-md-4" style={{ marginTop: '80px' }}>
         <h3 className="fw-bold">{title}</h3>
         <p>{summary}</p>
       </div>
@@ -32,7 +32,7 @@ function RecipeSection({ title, summary }) {
             summary="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           />
         </div>
-        <h3 style={{marginTop: '40px' }}>Our Offering</h3>
+        <h3 style={{marginTop: '100px' }}>Our Offering</h3>
       </div>
     );
   }
