@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import '../App.css';
 
 function HeroImage() {
@@ -18,9 +19,9 @@ function Hero() {
     <div className="container-fluid justify-content-center text-center hero-container">
       <h1 className="fw-bold hero-heading" style={{ marginTop: '20px' }}>Your favorite cooking partner.</h1>
       <HeroImage />
-      <button className="btn btn-dark mt-3 hero-button">
+      <Link to="/contact" className="btn btn-dark mt-3 hero-button">
         Contact Us
-      </button>
+      </Link>
     </div>
   );
 }

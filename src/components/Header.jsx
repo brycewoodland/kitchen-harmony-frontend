@@ -1,8 +1,10 @@
+import { NavLink } from 'react-router-dom';
+
 function NavbarBrand() {
   return (
-    <a className="navbar-brand" href="#">
+    <NavLink className="navbar-brand" to="/">
       <img src="/logo.png" alt="Logo" style={{ height: '100px' }} /> {/* Adjust the height as needed */}
-    </a>
+    </NavLink>
   );
 }
 
@@ -13,21 +15,20 @@ function NavbarToggler() {
     </button>
   );
 }
-
 function NavbarNav() {
   return (
     <ul className="navbar-nav mx-auto justify-content-center">
       <li className="nav-item">
-        <a className="nav-link active" aria-current="page" href="#">Home</a>
+        <NavLink className="nav-link" to="/" end activeClassName="active">Home</NavLink>
       </li>
       <li className="nav-item">
-        <a className="nav-link" href="#">About Us</a>
+        <NavLink className="nav-link" to="/about" activeClassName="active">About Us</NavLink>
       </li>
       <li className="nav-item">
-        <a className="nav-link" aria-disabled="true" href="#">Services</a>
+        <NavLink className="nav-link" to="/services" activeClassName="active">Services</NavLink>
       </li>
       <li className="nav-item">
-        <a className="nav-link" aria-disabled="true" href="#">Contact</a>
+        <NavLink className="nav-link" to="/contact" activeClassName="active">Contact</NavLink>
       </li>
     </ul>
   );
