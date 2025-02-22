@@ -19,7 +19,7 @@ function NavbarNav() {
   return (
     <ul className="navbar-nav mx-auto justify-content-center">
       <li className="nav-item">
-        <NavLink className="nav-link" to="/" end activeClassName="active">Home</NavLink>
+        <NavLink className="nav-link" to="/" activeClassName="active">Home</NavLink>
       </li>
       <li className="nav-item">
         <NavLink className="nav-link" to="/about" activeClassName="active">About Us</NavLink>

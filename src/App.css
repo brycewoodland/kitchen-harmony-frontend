@@ -45,3 +45,31 @@
   .img-hover-zoom:hover {
     transform: scale(1.1);
   }
+
+/* FooterSection.css */
+.footer .fab {
+  transition: transform 0.3s ease-in
+}
+
+.footer .fab:hover {
+  transform: scale(1.2);
+}
+
+/* Service.css */
+.service-section {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.service-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 15px;
+}
+
+.service-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+}

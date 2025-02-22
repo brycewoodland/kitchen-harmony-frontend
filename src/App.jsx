@@ -4,7 +4,9 @@ import Hero from './components/Hero';
 import RecipeHome from './components/RecipeHome';
 import CookSection from './components/CookSection';
 import Footer from './components/Footer';
-import Contact from './components/Contact'; // Import the Contact component
+import Contact from './components/Contact'; 
+import AboutUs from './components/AboutUs';
+import Service from './components/Service';
 
 function App() {
   return (
@@ -18,7 +20,8 @@ function App() {
             <CookSection />
           </>} />
           <Route path="/recipes" element={<RecipeHome />} />
-          <Route path="/cook" element={<CookSection />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/services" element={<Service />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
         <Footer />
