@@ -32,18 +32,18 @@ function AboutUs() {
       
       <section className="about-section mb-5">
         <h2>Team</h2>
-        <div className="row">
-          <div className="col-md-4 text-center">
+        <div className="team-grid">
+          <div className="team-member text-center">
             <img src="path/to/photo.jpg" alt="Team Member" className="img-fluid rounded-circle mb-2" />
             <h5>John Doe</h5>
             <p>Founder & CEO</p>
           </div>
-          <div className="col-md-4 text-center">
+          <div className="team-member text-center">
             <img src="path/to/photo.jpg" alt="Team Member" className="img-fluid rounded-circle mb-2" />
             <h5>Jane Smith</h5>
             <p>Head Chef</p>
           </div>
-          <div className="col-md-4 text-center">
+          <div className="team-member text-center">
             <img src="path/to/photo.jpg" alt="Team Member" className="img-fluid rounded-circle mb-2" />
             <h5>Emily Johnson</h5>
             <p>Marketing Director</p>

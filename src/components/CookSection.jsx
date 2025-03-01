@@ -7,13 +7,13 @@ function CookSection() {
       <div className="container">
         <div className="grid-container">
           <div className="grid-item">
-            <img src="../public/fettucineAlfredo.jpg" alt="Fettucine Alfredo" className="img-fluid img-hover-zoom" loading="lazy" />
+            <img src="fettucineAlfredo.jpg" alt="Fettucine Alfredo" className="img-fluid img-hover-zoom" loading="lazy" />
           </div>
           <div className="grid-item">
-            <img src="../public/acaiBowl.jpg" alt="Acai Bowl" className="img-fluid img-hover-zoom" loading="lazy" />
+            <img src="acaiBowl.jpg" alt="Acai Bowl" className="img-fluid img-hover-zoom" loading="lazy" />
           </div>
           <div className="grid-item">
-            <img src="../public/soup.jpg" alt="Soup" className="img-fluid img-hover-zoom" loading="lazy" />
+            <img src="soup.jpg" alt="Soup" className="img-fluid img-hover-zoom" loading="lazy" />
           </div>
         </div>
       </div>

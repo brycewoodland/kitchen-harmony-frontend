@@ -1,4 +1,6 @@
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import '../App.css';
 
 function NavbarBrand() {
   return (
@@ -15,6 +17,7 @@ function NavbarToggler() {
     </button>
   );
 }
+
 function NavbarNav() {
   return (
     <ul className="navbar-nav mx-auto justify-content-center">
@@ -34,24 +37,58 @@ function NavbarNav() {
   );
 }
 
-function NavbarDropdown() {
+function NavbarDropdown({ user }) {
   return (
-    <li className="nav-item dropdown w-100 w-lg-auto"> {/* Added w-100 for small screens and w-lg-auto for larger screens */}
-      <a className="nav-link dropdown-toggle px-3 py-2 rounded w-100 text-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-        style={{ backgroundColor: "black", color: "white", borderRadius: "8px" }}>
-        Profile
+    <li className="nav-item dropdown">
+      <a
+        className="nav-link dropdown-toggle"
+        href="#"
+        id="navbarDropdown"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px'}} // Set the text and background color to black
+      >
+        {user.fname} {user.lname}
       </a>
-      <ul className="dropdown-menu dropdown-menu-end w-100"> {/* Added w-100 to make the dropdown span the full width */}
-        <li><a className="dropdown-item" href="#">Profile</a></li>
-        <li><a className="dropdown-item" href="#">Settings</a></li>
-        <li><hr className="dropdown-divider" /></li>
-        <li><a className="dropdown-item" href="#">Logout</a></li>
+      <ul className="dropdown-menu dropdown-menu-end rounded-dropdown" aria-labelledby="navbarDropdown">
+        <li>
+          <Link className="dropdown-item" to="/dashboard">Dashboard</Link>
+        </li>
+        <li>
+          <Link className="dropdown-item" to="/profile">Profile</Link>
+        </li>
+        <li>
+          <hr className="dropdown-divider" />
+        </li>
+        <li>
+          <a className="dropdown-item" href="/logout">Logout</a>
+        </li>
       </ul>
     </li>
   );
 }
 
 function Header() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Fetch user information from the REST API
+    const userId = '67906759aa52af3c65c351ff'; // Replace with the actual user ID
+    fetch(`http://localhost:3000/users/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        setUser(data);
+        setIsAuthenticated(true);
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+        setIsAuthenticated(false);
+      });
+  }, []);
+
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container-fluid">
@@ -63,7 +100,13 @@ function Header() {
           </div>
           <div className="d-flex ms-auto">
             <ul className="navbar-nav">
-              <NavbarDropdown />
+              {isAuthenticated ? <NavbarDropdown user={user} /> : (
+                <li className="nav-item">
+                  <button className="btn btn-primary" style={{ backgroundColor: 'black', padding: '10px' }}>
+                    Login
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         </div>
