@@ -2,18 +2,18 @@ import '../App.css';
 
 function CookSection() {
   return (
-    <div className="w-100" style={{ backgroundColor: '#ebebeb', minHeight: '100vh', margin: 0, padding: 0 }}>
-      <h1 className="text-center" style={{ marginTop: '100px', padding: '30px' }}>Cook any meal quickly and easily.</h1>
+    <div className="w-100 cook-section">
+      <h1 className="text-center cook-section-title">Cook any meal quickly and easily.</h1>
       <div className="container">
-        <div className="row">
-          <div className="col-md-4" style={{ marginTop: '100px', padding: '10px' }}>
-            <img src="https://placehold.co/400x300?text=placeholder&font=roboto" alt="Placeholder 1" className="img-fluid img-hover-zoom" />
+        <div className="grid-container">
+          <div className="grid-item">
+            <img src="../public/fettucineAlfredo.jpg" alt="Fettucine Alfredo" className="img-fluid img-hover-zoom" loading="lazy" />
           </div>
-          <div className="col-md-4" style={{ marginTop: '100px', padding: '10px' }}>
-            <img src="https://placehold.co/400x300?text=placeholder&font=roboto" alt="Placeholder 2" className="img-fluid img-hover-zoom" />
+          <div className="grid-item">
+            <img src="../public/acaiBowl.jpg" alt="Acai Bowl" className="img-fluid img-hover-zoom" loading="lazy" />
           </div>
-          <div className="col-md-4" style={{ marginTop: '100px', padding: '10px' }}>
-            <img src="https://placehold.co/400x300?text=placeholder&font=roboto" alt="Placeholder 3" className="img-fluid img-hover-zoom" />
+          <div className="grid-item">
+            <img src="../public/soup.jpg" alt="Soup" className="img-fluid img-hover-zoom" loading="lazy" />
           </div>
         </div>
       </div>
