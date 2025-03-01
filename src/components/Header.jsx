@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import '../App.css';
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 
 function NavbarBrand() {
   return (
@@ -47,7 +50,7 @@ function NavbarDropdown({ user }) {
         role="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px'}} // Set the text and background color to black
+        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px' }} // Set the text and background color to black
       >
         {user.fname} {user.lname}
       </a>
@@ -62,7 +65,7 @@ function NavbarDropdown({ user }) {
           <hr className="dropdown-divider" />
         </li>
         <li>
-          <a className="dropdown-item" href="/logout">Logout</a>
+          <LogoutButton />
         </li>
       </ul>
     </li>
@@ -70,24 +73,30 @@ function NavbarDropdown({ user }) {
 }
 
 function Header() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const { isAuthenticated, user } = useAuth0();
+  const [userData, setUserData] = useState(null);
+
+  const fetchUserByEmail = async (email) => {
+    try {
+      const response = await fetch(`http://localhost:3000/users/email/${email}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  };
 
   useEffect(() => {
-    // Fetch user information from the REST API
-    const userId = '67906759aa52af3c65c351ff'; // Replace with the actual user ID
-    fetch(`http://localhost:3000/users/${userId}`)
-      .then(response => response.json())
-      .then(data => {
-        setUser(data);
-        setIsAuthenticated(true);
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-        setIsAuthenticated(false);
-      });
-  }, []);
+    if (isAuthenticated && user) {
+      fetchUserByEmail(user.email)
+        .then((data) => setUserData(data))
+        .catch((error) => console.error('Error fetching user data:', error));
+    }
+  }, [isAuthenticated, user]);
 
   return (
     <nav className="navbar navbar-expand-lg">
@@ -100,11 +109,9 @@ function Header() {
           </div>
           <div className="d-flex ms-auto">
             <ul className="navbar-nav">
-              {isAuthenticated ? <NavbarDropdown user={user} /> : (
+              {isAuthenticated && userData ? <NavbarDropdown user={userData} /> : (
                 <li className="nav-item">
-                  <button className="btn btn-primary" style={{ backgroundColor: 'black', padding: '10px' }}>
-                    Login
-                  </button>
+                  <LoginButton />
                 </li>
               )}
             </ul>

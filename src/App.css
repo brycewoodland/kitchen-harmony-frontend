@@ -2,6 +2,14 @@
   margin-right: 6rem;
 }
 
+/* Remove blue hover effect in dropdown */
+.dropdown-item:focus, .dropdown-item:active {
+  background-color: transparent;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
 /* Fade-in animation for the hero image */
 .hero-image img {
   opacity: 0;
