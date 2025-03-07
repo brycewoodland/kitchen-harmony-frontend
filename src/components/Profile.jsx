@@ -6,7 +6,7 @@ const Profile = () => {
 
     const fetchUserByEmail = async (email) => {
         try {
-          const response = await fetch(`http://localhost:3000/users/email/${email}`);
+          const response = await fetch(`https://localhost:3000/users/email/${email}`);
           if (!response.ok) {
             throw new Error('Failed to fetch user data');
           }
@@ -34,14 +34,14 @@ const Profile = () => {
   }
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return <div style={{ padding: '10px' }}>Loading...</div>;
   }
 
   return (
     <div className="container profile-page">
       <h1 className="profile-title">Profile</h1>
       <div className="profile-info">
-        <p><strong>Name:</strong> {userData.name}</p>
+        <p><strong>Name:</strong> {userData.fname} {userData.lname}</p>
         <p><strong>Email:</strong> {userData.email}</p>
         {/* Add more user information as needed */}
       </div>

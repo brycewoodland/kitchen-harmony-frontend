@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../App.css'; 
 
 function Dashboard() {
@@ -11,7 +12,7 @@ function Dashboard() {
             <div className="card-body">
               <h5 className="card-title">My Recipes</h5>
               <p className="card-text">View and manage your personal recipes.</p>
-              <a href="#" className="btn btn-primary btn-black">Go to My Recipes</a> {/* Add btn-black class */}
+              <Link to="/my-recipes" className="btn btn-primary btn-black">Go to My Recipes</Link>
             </div>
           </div>
         </div>

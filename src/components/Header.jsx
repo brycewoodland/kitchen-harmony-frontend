@@ -8,14 +8,22 @@ import LogoutButton from './LogoutButton';
 function NavbarBrand() {
   return (
     <NavLink className="navbar-brand" to="/">
-      <img src="/logo.png" alt="Logo" style={{ height: '100px' }} /> {/* Adjust the height as needed */}
+      <img src="/logo.png" alt="Logo" style={{ height: '100px' }} />{' '}
+      {/* Adjust the height as needed */}
     </NavLink>
   );
 }
 
 function NavbarToggler() {
   return (
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      className="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarScroll"
+      aria-controls="navbarScroll"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
   );
@@ -25,16 +33,24 @@ function NavbarNav() {
   return (
     <ul className="navbar-nav mx-auto justify-content-center">
       <li className="nav-item">
-        <NavLink className="nav-link" to="/" activeClassName="active">Home</NavLink>
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/">
+          Home
+        </NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/about" activeClassName="active">About Us</NavLink>
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/about">
+          About Us
+        </NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/services" activeClassName="active">Services</NavLink>
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/services">
+          Services
+        </NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/contact" activeClassName="active">Contact</NavLink>
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/contact">
+          Contact
+        </NavLink>
       </li>
     </ul>
   );
@@ -54,12 +70,18 @@ function NavbarDropdown({ user }) {
       >
         {user.fname} {user.lname}
       </a>
-      <ul className="dropdown-menu dropdown-menu-end rounded-dropdown" aria-labelledby="navbarDropdown">
+      <ul
+        className="dropdown-menu dropdown-menu-end rounded-dropdown"
+        aria-labelledby="navbarDropdown">
         <li>
-          <Link className="dropdown-item" to="/dashboard">Dashboard</Link>
+          <Link className="dropdown-item" to="/dashboard">
+            Dashboard
+          </Link>
         </li>
         <li>
-          <Link className="dropdown-item" to="/profile">Profile</Link>
+          <Link className="dropdown-item" to="/profile">
+            Profile
+          </Link>
         </li>
         <li>
           <hr className="dropdown-divider" />
@@ -109,7 +131,9 @@ function Header() {
           </div>
           <div className="d-flex ms-auto">
             <ul className="navbar-nav">
-              {isAuthenticated && userData ? <NavbarDropdown user={userData} /> : (
+              {isAuthenticated && userData ? (
+                <NavbarDropdown user={userData} />
+              ) : (
                 <li className="nav-item">
                   <LoginButton />
                 </li>

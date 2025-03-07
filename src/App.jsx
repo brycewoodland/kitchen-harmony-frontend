@@ -9,6 +9,7 @@ import AboutUs from './components/AboutUs';
 import Service from './components/Service';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
+import MyRecipes from './components/MyRecipes';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/my-recipes" element={<MyRecipes />} />
         </Routes>
         <Footer />
       </div>
