@@ -724,3 +724,91 @@ input:checked + .slider .slider-text {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Recipe Edit Form */
+
+.recipe-edit-form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+}
+
+.recipe-edit-form h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.recipe-edit-form input,
+.recipe-edit-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.recipe-edit-form input:focus,
+.recipe-edit-form textarea:focus {
+  border-color: #0056b3;
+  outline: none;
+}
+
+.recipe-edit-form textarea {
+  height: 150px;
+  resize: none;
+}
+
+.recipe-edit-form button {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+}
+
+.recipe-edit-form button:hover {
+  background-color: #004080;
+}
+
+/* Label styling */
+.recipe-edit-form label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.recipe-edit-form .form-group {
+  margin-bottom: 20px;
+}
+
+/* Add styling for the button container */
+.recipe-edit-form .button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px; /* Add gap between Save and Cancel buttons */
+}
+
+.recipe-edit-form .button-container button {
+  width: 48%; /* Make buttons take equal space */
+}
+
+.recipe-edit-form .cancel-button {
+  background-color: #f44336; /* Red for cancel */
+}
+
+.recipe-edit-form .cancel-button:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import RecipeForm from './RecipeForm';
-import '../App.css';
+import RecipeCard from '../components/Recipe/RecipeCard';
+import RecipeModal from '../components/Recipe/RecipeModal';
+import RecipeEditForm from '../components/Recipe/RecipeEditForm';
+import RecipeForm from '../components/Recipe/RecipeForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 const MyRecipes = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -12,6 +14,8 @@ const MyRecipes = () => {
   const [userId, setUserId] = useState(null);
   const [viewMyRecipes, setViewMyRecipes] = useState(true);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableRecipe, setEditableRecipe] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -27,7 +31,6 @@ const MyRecipes = () => {
           console.error('Error fetching userId from MongoDB:', error);
         }
       };
-
       fetchUserIdFromMongo();
     }
   }, [isAuthenticated, user]);
@@ -36,7 +39,7 @@ const MyRecipes = () => {
     if (isAuthenticated && userId) {
       const url = viewMyRecipes
         ? `http://localhost:3000/recipe/user/${userId}`
-        : `http://localhost:3000/recipe`;
+        : 'http://localhost:3000/recipe';
 
       fetch(url)
         .then((response) => response.json())
@@ -46,30 +49,45 @@ const MyRecipes = () => {
   }, [isAuthenticated, userId, viewMyRecipes]);
 
   const handleAddRecipe = async (newRecipe) => {
-    if (!userId) {
-      console.log('User ID not found.');
-      return;
-    }
-
+    if (!userId) return;
     try {
       const response = await fetch(`http://localhost:3000/recipe/user/${userId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...newRecipe, userId: userId }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newRecipe, userId }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to add recipe');
-      }
-
+      if (!response.ok) throw new Error('Failed to add recipe');
       const addedRecipe = await response.json();
-      setRecipes([...recipes, addedRecipe]);
+      setRecipes((prevRecipes) => [...prevRecipes, addedRecipe]);
       setShowForm(false);
     } catch (error) {
       console.error('Error adding recipe:', error);
     }
+  };
+
+  const handleUpdateRecipe = (updatedRecipe) => {
+    if (!userId) return;
+    fetch(`http://localhost:3000/recipe/${updatedRecipe._id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedRecipe),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setRecipes((prevRecipes) =>
+          prevRecipes.map((recipe) => (recipe._id === updatedRecipe._id ? { ...recipe, ...updatedRecipe } : recipe))
+        );
+        setIsEditing(false);
+        setEditableRecipe(null);
+        setSelectedRecipe(null);
+      })
+      .catch((error) => console.error('Error updating recipe:', error));
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false); // Exit edit mode
+    setEditableRecipe(null); // Optionally reset the editable recipe state
+    setSelectedRecipe(null); // Optionally close the modal or reset the selected recipe
   };
 
   if (!isAuthenticated) {
@@ -96,47 +114,41 @@ const MyRecipes = () => {
           <FontAwesomeIcon icon={showForm ? faMinus : faPlus} />
         </button>
       </div>
+
       {showForm && <RecipeForm onAddRecipe={handleAddRecipe} />}
+
       {!showForm && (
         <div className="recipes-list row">
-          {recipes.map((recipe, index) => (
-            <div key={index} className="col-md-4 mb-4">
-              <div className="card recipe-card" onClick={() => setSelectedRecipe(recipe)}>
-                {recipe.imageUrl && (
-                  <img src={recipe.imageUrl} className="card-img-top" alt={recipe.title} />
-                )}
-                <div className="card-body">
-                  <h5 className="card-title">{recipe.title}</h5>
-                  <p className="card-text">{recipe.description}</p>
-                </div>
-              </div>
-            </div>
+          {recipes.map((recipe) => (
+            <RecipeCard key={recipe._id} recipe={recipe} onClick={setSelectedRecipe} />
           ))}
         </div>
       )}
 
-      {/* Recipe Details Modal */}
-      {selectedRecipe && (
-        <div className="recipe-modal-overlay">
-          <div className="recipe-modal">
-            <button className="close-modal" onClick={() => setSelectedRecipe(null)}>
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-            <h2>{selectedRecipe.title}</h2>
-            <img src={selectedRecipe.imageUrl} alt={selectedRecipe.title} className="modal-image" />
-            <p className="modal-description">{selectedRecipe.description}</p>
+      {selectedRecipe && !isEditing && (
+        <RecipeModal
+          recipe={selectedRecipe}
+          userId={userId}
+          onClose={() => setSelectedRecipe(null)}
+          onEditClick={(recipe) => {
+            setIsEditing(true);
+            setEditableRecipe({ ...recipe });
+          }}
+        />
+      )}
 
-            <h3>Ingredients</h3>
-            <ul className="modal-ingredients">
-              {selectedRecipe.ingredients.map((ingredient, i) => (
-                <li key={i}>{`${ingredient.quantity} ${ingredient.unit} - ${ingredient.name}`}</li>
-              ))}
-            </ul>
-
-            <h3>Instructions</h3>
-            <p className="modal-instructions">{selectedRecipe.instructions}</p>
-          </div>
-        </div>
+      {isEditing && editableRecipe && (
+        <RecipeEditForm
+          editableRecipe={editableRecipe}
+          onInputChange={(e) => setEditableRecipe({ ...editableRecipe, [e.target.name]: e.target.value })}
+          onIngredientChange={(index, e) => {
+            const updatedIngredients = [...editableRecipe.ingredients];
+            updatedIngredients[index] = { ...updatedIngredients[index], [e.target.name]: e.target.value };
+            setEditableRecipe({ ...editableRecipe, ingredients: updatedIngredients });
+          }}
+          onSave={handleUpdateRecipe}
+          onCancel={handleCancelEdit} // Pass onCancel handler to RecipeEditForm
+        />
       )}
     </div>
   );

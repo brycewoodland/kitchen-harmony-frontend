@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../App.css';
 
 const RecipeForm = ({ onAddRecipe, closeModal }) => {
   const navigate = useNavigate(); // Initialize navigate function

@@ -9,7 +9,7 @@ import AboutUs from './components/AboutUs';
 import Service from './components/Service';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
-import MyRecipes from './components/MyRecipes';
+import MyRecipes from './pages/MyRecipes';
 
 
 function App() {
