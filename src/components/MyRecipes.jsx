@@ -3,26 +3,26 @@ import { useAuth0 } from '@auth0/auth0-react';
 import RecipeForm from './RecipeForm';
 import '../App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 const MyRecipes = () => {
   const { user, isAuthenticated } = useAuth0();
   const [recipes, setRecipes] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [viewMyRecipes, setViewMyRecipes] = useState(true); // State to manage the toggle
+  const [viewMyRecipes, setViewMyRecipes] = useState(true);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
-  // Fetch the userId from MongoDB when the user logs in
   useEffect(() => {
     if (isAuthenticated && user) {
       const fetchUserIdFromMongo = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/users/email/${user.email}`); 
+          const response = await fetch(`http://localhost:3000/users/email/${user.email}`);
           if (!response.ok) {
             throw new Error('Failed to fetch user data');
           }
           const data = await response.json();
-          setUserId(data._id); 
+          setUserId(data._id);
         } catch (error) {
           console.error('Error fetching userId from MongoDB:', error);
         }
@@ -32,7 +32,6 @@ const MyRecipes = () => {
     }
   }, [isAuthenticated, user]);
 
-  // Fetch recipes based on the toggle state
   useEffect(() => {
     if (isAuthenticated && userId) {
       const url = viewMyRecipes
@@ -56,9 +55,9 @@ const MyRecipes = () => {
       const response = await fetch(`http://localhost:3000/recipe/user/${userId}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...newRecipe, userId: userId }) 
+        body: JSON.stringify({ ...newRecipe, userId: userId }),
       });
 
       if (!response.ok) {
@@ -67,7 +66,7 @@ const MyRecipes = () => {
 
       const addedRecipe = await response.json();
       setRecipes([...recipes, addedRecipe]);
-      setShowForm(false); // Hide the form after adding the recipe
+      setShowForm(false);
     } catch (error) {
       console.error('Error adding recipe:', error);
     }
@@ -94,26 +93,51 @@ const MyRecipes = () => {
           </label>
         </div>
         <button className="add-recipe-button" onClick={() => setShowForm(!showForm)}>
-          <FontAwesomeIcon icon={faPlus} />
+          <FontAwesomeIcon icon={showForm ? faMinus : faPlus} />
         </button>
       </div>
       {showForm && <RecipeForm onAddRecipe={handleAddRecipe} />}
-      <div className="recipes-list row">
-        {recipes.map((recipe, index) => (
-          <div key={index} className="col-md-4 mb-4">
-            <div className="card recipe-card">
-              {recipe.imageUrl && (
-                <img src={recipe.imageUrl} className="card-img-top" alt={recipe.title} />
-              )}
-              <div className="card-body">
-                <h5 className="card-title">{recipe.title}</h5>
-                <p className="card-text">{recipe.description}</p>
-                {/* Add more recipe details as needed */}
+      {!showForm && (
+        <div className="recipes-list row">
+          {recipes.map((recipe, index) => (
+            <div key={index} className="col-md-4 mb-4">
+              <div className="card recipe-card" onClick={() => setSelectedRecipe(recipe)}>
+                {recipe.imageUrl && (
+                  <img src={recipe.imageUrl} className="card-img-top" alt={recipe.title} />
+                )}
+                <div className="card-body">
+                  <h5 className="card-title">{recipe.title}</h5>
+                  <p className="card-text">{recipe.description}</p>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+      )}
+
+      {/* Recipe Details Modal */}
+      {selectedRecipe && (
+        <div className="recipe-modal-overlay">
+          <div className="recipe-modal">
+            <button className="close-modal" onClick={() => setSelectedRecipe(null)}>
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+            <h2>{selectedRecipe.title}</h2>
+            <img src={selectedRecipe.imageUrl} alt={selectedRecipe.title} className="modal-image" />
+            <p className="modal-description">{selectedRecipe.description}</p>
+
+            <h3>Ingredients</h3>
+            <ul className="modal-ingredients">
+              {selectedRecipe.ingredients.map((ingredient, i) => (
+                <li key={i}>{`${ingredient.quantity} ${ingredient.unit} - ${ingredient.name}`}</li>
+              ))}
+            </ul>
+
+            <h3>Instructions</h3>
+            <p className="modal-instructions">{selectedRecipe.instructions}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,6 +10,74 @@
   outline: none;
 }
 
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Reduce the opacity for a clearer background image */
+  display: flex;
+  justify-content: flex-start; /* Align items to the start (left) */
+  align-items: center;
+  padding-left: 50px; /* Add some padding to the left */
+}
+
+.hero-content {
+  text-align: left; /* Align text to the left */
+  color: white;
+}
+
+.hero-heading {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  background-color: rgba(255, 255, 255, 0.8); /* Make the form background semi-transparent */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.login-heading {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  color: black;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
 /* Fade-in animation for the hero image */
 .hero-image img {
   opacity: 0;
@@ -451,15 +519,21 @@ input:checked + .slider .slider-text {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
   margin-bottom: 20px;
+  max-width: 300px; /* Make the card a little bit smaller */
+  margin: 0 auto; /* Center the card horizontally */
 }
 
 .recipe-card .card-img-top {
   width: 100%;
   height: auto;
+  max-height: 200px; /* Limit the height of the image */
+  object-fit: contain; /* Ensure the image covers the area without stretching */
+  padding: 10px; /* Add padding around the image */
 }
 
 .recipe-card .card-body {
   padding: 16px;
+  text-align: center; /* Center the text in the card */
 }
 
 .recipe-card .card-title {
@@ -471,6 +545,90 @@ input:checked + .slider .slider-text {
   font-size: 1rem;
   color: #555;
 }
+
+/* Background blur effect */
+.recipe-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal card */
+.recipe-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 600px; /* Wider but not too big */
+  max-width: 90%;
+  max-height: 80vh; /* Prevents it from going off-screen */
+  overflow-y: auto; /* Scrolls if content overflows */
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  animation: zoomIn 0.2s ease-in-out forwards;
+  position: relative;
+}
+
+/* Zoom-in animation */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Close button */
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Recipe Image */
+.modal-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Ingredients list */
+.modal-ingredients {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  text-align: left;
+}
+
+.modal-ingredients li {
+  background: #f8f8f8;
+  padding: 6px;
+  margin: 4px 0;
+  border-radius: 5px;
+}
+
+/* Instructions */
+.modal-instructions {
+  text-align: left;
+  font-size: 14px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
 
 /* Recipe Form */
 
@@ -546,4 +704,23 @@ input:checked + .slider .slider-text {
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
+}
+
+/* Style for invalid inputs */
+.invalid {
+  border: 2px solid red;
+  background-color: #f8d7da;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
