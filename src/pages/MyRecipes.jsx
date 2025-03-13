@@ -84,6 +84,19 @@ const MyRecipes = () => {
       .catch((error) => console.error('Error updating recipe:', error));
   };
 
+  const handleDeleteRecipe = async (recipeId) => {
+    if (!userId) return;
+    try {
+      const response = await fetch(`http://localhost:3000/recipe/${recipeId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete recipe');
+      setRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe._id !== recipeId));
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+  };
+
   const handleCancelEdit = () => {
     setIsEditing(false); // Exit edit mode
     setEditableRecipe(null); // Optionally reset the editable recipe state
@@ -120,7 +133,7 @@ const MyRecipes = () => {
       {!showForm && (
         <div className="recipes-list row">
           {recipes.map((recipe) => (
-            <RecipeCard key={recipe._id} recipe={recipe} onClick={setSelectedRecipe} />
+            <RecipeCard key={recipe._id} recipe={recipe} onClick={setSelectedRecipe} onDelete={handleDeleteRecipe} />
           ))}
         </div>
       )}
