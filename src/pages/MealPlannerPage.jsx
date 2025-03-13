@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-// import RecipeSelectionModal from '../components/MealPlanner/RecipeSelectionModal';
+import '../App.css';
+import RecipeSelectionModal from '../components/MealPlanner/RecipeSelectionModal';
 import MealDayCard from '../components/MealPlanner/MealDayCard';
 
 const MealPlannerPage = () => {

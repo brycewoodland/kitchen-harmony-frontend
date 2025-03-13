@@ -812,3 +812,113 @@ input:checked + .slider .slider-text {
 .recipe-edit-form .cancel-button:hover {
   background-color: #d32f2f; /* Darker red on hover */
 }
+
+/** MealPlannerPage **/
+.meal-planner-page {
+  padding: 20px;
+  background-color: #f5f5f5;
+  margin-bottom: 50px;
+}
+
+.meal-planner-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 15px;
+  padding: 10px;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 768px) {
+  .meal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/** MealDayCard **/
+.meal-day-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.meal-day-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rga(0, 0, 0, 0.2);
+}
+
+.meal-day-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.meal-day-card button {
+  margin-top: 10px;
+  background-color: #504dff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.meal-day-card button:hover {
+  background-color: #4078e0;
+}
+
+/** RecipeSelectionModal **/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.recipe-selection-modal {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-button {
+  font-size: 1.5em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #004080
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
