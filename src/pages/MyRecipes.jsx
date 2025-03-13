@@ -147,7 +147,7 @@ const MyRecipes = () => {
             setEditableRecipe({ ...editableRecipe, ingredients: updatedIngredients });
           }}
           onSave={handleUpdateRecipe}
-          onCancel={handleCancelEdit} // Pass onCancel handler to RecipeEditForm
+          onCancel={handleCancelEdit}
         />
       )}
     </div>
