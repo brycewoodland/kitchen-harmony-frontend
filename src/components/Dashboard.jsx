@@ -21,7 +21,7 @@ function Dashboard() {
             <div className="card-body">
               <h5 className="card-title">Meal Plans</h5>
               <p className="card-text">Create and manage your meal plans.</p>
-              <a href="#" className="btn btn-primary btn-black">Go to Meal Plans</a> {/* Add btn-black class */}
+              <Link to="/mealplan" className="btn btn-primary btn-black">Go to Meal Plans</Link>
             </div>
           </div>
         </div>

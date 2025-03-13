@@ -10,6 +10,7 @@ import Service from './components/Service';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import MyRecipes from './pages/MyRecipes';
+import MealPlannerPage from './pages/MealPlannerPage';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/my-recipes" element={<MyRecipes />} />
+          <Route path="/mealplan" element={<MealPlannerPage />} />
         </Routes>
         <Footer />
       </div>
