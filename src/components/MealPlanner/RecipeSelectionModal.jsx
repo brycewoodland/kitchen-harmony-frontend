@@ -7,7 +7,7 @@ const RecipeSelectionModal = ({ onSelect, onClose }) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await fetch('http://localhost:3000/recipe');  // Replace with your API endpoint
+        const response = await fetch('http://localhost:3000/recipe');
         const data = await response.json();
         setRecipes(data);  // Store recipes in state
       } catch (error) {
@@ -18,7 +18,7 @@ const RecipeSelectionModal = ({ onSelect, onClose }) => {
     };
 
     fetchRecipes(); // Call fetchRecipes when the modal is mounted
-  }, []); // Empty dependency array ensures this runs only once when the modal opens
+  }, []); 
 
   if (loading) {
     return <div>Loading recipes...</div>; // Show loading message while fetching

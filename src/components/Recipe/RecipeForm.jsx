@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const RecipeForm = ({ onAddRecipe, closeModal }) => {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate(); 
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -12,7 +12,6 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [errors, setErrors] = useState({});
-  const [isAdding, setIsAdding] = useState(true); // State to track if the user is adding or removing ingredients
 
   const validateForm = () => {
     const newErrors = {};
@@ -20,7 +19,7 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
     if (!description.trim()) newErrors.description = 'Description is required';
     if (!instructions.trim()) newErrors.instructions = 'Instructions are required';
 
-    if (ingredients.some(ing => !ing.name || !ing.quantity || !ing.unit)) {
+    if (ingredients.some(ing => !ing.name.trim() || !ing.quantity.trim() || !ing.unit.trim())) {
       newErrors.ingredients = 'All ingredient fields are required';
     }
 
@@ -39,10 +38,10 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
     // Proceed with adding the recipe
     onAddRecipe({ title, description, ingredients, instructions, tags, imageUrl, isPublic });
 
-    // Close the modal and redirect to "My Recipes" page after form submission
-    closeModal();  // Close the modal
-    navigate('/my-recipes', { replace: true });  // Redirect to /my-recipes
+    // Reset form and navigate
     resetForm();
+    closeModal();
+    navigate('/my-recipes', { replace: true });
   };
 
   const resetForm = () => {
@@ -57,21 +56,22 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
   };
 
   const handleBack = () => {
-    closeModal();  // Close the modal
-    navigate('/my-recipes', { replace: true });  // Redirect to /my-recipes
+    closeModal();  
+    navigate('/my-recipes', { replace: true });  
   };
 
-  const toggleIngredientButton = () => {
-    setIsAdding(!isAdding);
-    if (isAdding) {
-      setIngredients([...ingredients, { name: '', quantity: '', unit: '' }]);
-    } else {
-      setIngredients(ingredients.slice(0, -1)); // Remove the last ingredient
+  const addIngredient = () => {
+    setIngredients([...ingredients, { name: '', quantity: '', unit: '' }]);
+  };
+
+  const removeIngredient = (index) => {
+    if (ingredients.length > 1) {
+      setIngredients(ingredients.filter((_, i) => i !== index));
     }
   };
 
   return (
-    <div className="modal-overlay">
+    <div>
       <div className="recipe-form-container">
         <form className="recipe-form" onSubmit={handleSubmit}>
           <h2>Add New Recipe</h2>
@@ -100,7 +100,7 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
           <div className="ingredients-list">
             <label>Ingredients:</label>
             {ingredients.map((ingredient, index) => (
-              <div key={index}>
+              <div key={index} className="ingredient-input">
                 <input
                   type="text"
                   placeholder="Name"
@@ -110,7 +110,6 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
                     newIngredients[index].name = e.target.value;
                     setIngredients(newIngredients);
                   }}
-                  className={errors.ingredients ? 'invalid' : ''}
                 />
                 <input
                   type="text"
@@ -121,7 +120,6 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
                     newIngredients[index].quantity = e.target.value;
                     setIngredients(newIngredients);
                   }}
-                  className={errors.ingredients ? 'invalid' : ''}
                 />
                 <input
                   type="text"
@@ -132,13 +130,13 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
                     newIngredients[index].unit = e.target.value;
                     setIngredients(newIngredients);
                   }}
-                  className={errors.ingredients ? 'invalid' : ''}
                 />
+                {ingredients.length > 1 && (
+                  <button type="button" onClick={() => removeIngredient(index)}>-</button>
+                )}
               </div>
             ))}
-            <button type="button" onClick={toggleIngredientButton}>
-              {isAdding ? '+' : '-'} Ingredient
-            </button>
+            <button type="button" onClick={addIngredient}>+ Ingredient</button>
             {errors.ingredients && <span className="error">{errors.ingredients}</span>}
           </div>
 
