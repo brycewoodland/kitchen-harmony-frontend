@@ -895,9 +895,18 @@ input:checked + .slider .slider-text {
   border-radius: 10px;
   padding: 20px;
   width: 80%;
-  max-width: 600px;
+  max-width: 700px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease-out;
+}
+
+.recipe-selection-modal button {
+  border: none;
+  border-radius: 8px;
+  background-color: #504dff;
+  color: #fff;
+  margin: 5px;
+  padding: 5px;
 }
 
 .modal-header {
@@ -921,4 +930,37 @@ input:checked + .slider .slider-text {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/** MealTypeModal **/
+
+.meal-type-modal {
+  padding: 10px;
+  margin: 15px;
+}
+
+.meal-type-modal button {
+  padding: 10px;
+  margin: 5px;
+  background-color: #504dff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+}
+
+.meal-type-modal button:hover {
+  background-color: #4078e0;
+}
+
+/** MealPlannerCalendar **/
+.meal-planner-calendar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
