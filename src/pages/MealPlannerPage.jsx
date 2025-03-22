@@ -4,82 +4,70 @@ import RecipeSelectionModal from "../components/MealPlanner/RecipeSelectionModal
 import MealPlannerCalendar from "../components/MealPlanner/MealPlannerCalendar";
 
 const MealPlannerPage = () => {
-  const [mealPlan, setMealPlan] = useState({
-    Monday: { Breakfast: null, Lunch: null, Dinner: null },
-    Tuesday: { Breakfast: null, Lunch: null, Dinner: null },
-    Wednesday: { Breakfast: null, Lunch: null, Dinner: null },
-    Thursday: { Breakfast: null, Lunch: null, Dinner: null },
-    Friday: { Breakfast: null, Lunch: null, Dinner: null },
-    Saturday: { Breakfast: null, Lunch: null, Dinner: null },
-    Sunday: { Breakfast: null, Lunch: null, Dinner: null },
-  });
+    const [mealPlan, setMealPlan] = useState({});
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [selectedMeal, setSelectedMeal] = useState(null);
+    const [showRecipeModal, setShowRecipeModal] = useState(false);
 
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [selectedMeal, setSelectedMeal] = useState(null);
-  const [showMealSelect, setShowMealSelect] = useState(false);
-  const [showRecipeModal, setShowRecipeModal] = useState(false);
+    const handleRecipeSelect = (recipe) => {
+        if (!selectedDay || !selectedMeal) return;
 
-  const handleRecipeSelect = (recipe) => {
-    if (selectedDay && selectedMeal) {
-      setMealPlan((prevPlan) => ({
-        ...prevPlan,
-        [selectedDay]: {
-          ...prevPlan[selectedDay],
-          [selectedMeal]: recipe,
-        },
-      }));
-    }
-    setShowRecipeModal(false);
-    setShowMealSelect(false);
-  };
+        setMealPlan((prevPlan) => ({
+            ...prevPlan,
+            [selectedDay]: {
+                ...prevPlan[selectedDay],
+                [selectedMeal]: recipe,
+            },
+        }));
 
-  const handleRemoveRecipe = (day, mealType) => {
-    setMealPlan((prevPlan) => ({
-      ...prevPlan,
-      [day]: {
-        ...prevPlan[day],
-        [mealType]: null,
-      },
-    }));
-  };
+        setShowRecipeModal(false);
+    };
 
-  return (
-    <div className="container meal-planner-page">
-      <h1 className="meal-planner-title">Weekly Meal Planner</h1>
-      <MealPlannerCalendar mealPlan={mealPlan} onSelect={(day) => {
-        setSelectedDay(day);
-        setShowMealSelect(true);
-      }} onRemove={handleRemoveRecipe} />
+    const saveMealPlan = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/mealplan", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(mealPlan),
+            });
 
-      {/* Meal Selection Modal */}
-      {showMealSelect && (
-        <div className="meal-type-modal">
-          <h3>Select Meal Type for {selectedDay}</h3>
-          {["Breakfast", "Lunch", "Dinner"].map((meal) => (
-            <button
-              key={meal}
-              onClick={() => {
-                setSelectedMeal(meal);
-                setShowMealSelect(false);
-                setShowRecipeModal(true);
-              }}
-            >
-              {meal}
-            </button>
-          ))}
-          <button onClick={() => setShowMealSelect(false)}>Cancel</button>
+            if (!response.ok) {
+                throw new Error("Failed to save meal plan");
+            }
+
+            console.log("Meal plan saved successfully");
+            // Optionally, display a success message to the user
+        } catch (error) {
+            console.error("Error saving meal plan:", error);
+            // Optionally, display an error message to the user
+        }
+    };
+
+    return (
+        <div className="container meal-planner-page">
+            <h1 className="meal-planner-title">Weekly Meal Planner</h1>
+
+            <MealPlannerCalendar
+                mealsData={mealPlan}
+                onSelect={(day, mealType) => {
+                    setSelectedDay(day);
+                    setSelectedMeal(mealType);
+                    setShowRecipeModal(true);
+                }}
+            />
+
+            {showRecipeModal && (
+                <RecipeSelectionModal
+                    onClose={() => setShowRecipeModal(false)}
+                    onSelect={handleRecipeSelect}
+                />
+            )}
+
+            <button onClick={saveMealPlan}>Save Meal Plan</button>
         </div>
-      )}
-
-      {/* Recipe Selection Modal */}
-      {showRecipeModal && (
-        <RecipeSelectionModal
-          onClose={() => setShowRecipeModal(false)}
-          onSelect={handleRecipeSelect}
-        />
-      )}
-    </div>
-  );
+    );
 };
 
 export default MealPlannerPage;

@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 const RecipeSelectionModal = ({ onSelect, onClose }) => {
-  const [recipes, setRecipes] = useState([]);  // State to store fetched recipes
-  const [loading, setLoading] = useState(true); // State to track loading status
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await fetch('http://localhost:3000/recipe');
+        const response = await fetch("http://localhost:3000/recipe");
         const data = await response.json();
-        setRecipes(data);  // Store recipes in state
+        setRecipes(data);
       } catch (error) {
         console.error("Error fetching recipes:", error);
       } finally {
-        setLoading(false); // Set loading to false after fetch
+        setLoading(false);
       }
     };
 
-    fetchRecipes(); // Call fetchRecipes when the modal is mounted
-  }, []); 
+    fetchRecipes();
+  }, []);
 
-  if (loading) {
-    return <div>Loading recipes...</div>; // Show loading message while fetching
-  }
+  if (loading) return <div>Loading recipes...</div>;
 
   return (
     <div className="recipe-selection-modal">
@@ -32,14 +31,21 @@ const RecipeSelectionModal = ({ onSelect, onClose }) => {
         <ul className="recipe-list">
           {recipes.map((recipe) => (
             <li key={recipe._id} className="recipe-item">
-              <span>{recipe.title} - {recipe.description}</span>
-              <button onClick={() => onSelect(recipe)} className="select-recipe-button">Select</button>
+              <span>{recipe.title}</span>
+              <button onClick={() => onSelect(recipe)} className="select-recipe-button">
+                Select
+              </button>
             </li>
           ))}
         </ul>
       </div>
     </div>
   );
+};
+
+RecipeSelectionModal.propTypes = {
+  onSelect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default RecipeSelectionModal;

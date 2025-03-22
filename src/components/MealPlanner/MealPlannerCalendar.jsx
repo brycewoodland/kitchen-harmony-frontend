@@ -1,33 +1,44 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import Calendar from "react-calendar";
-import MealDayCard from "./MealDayCard";
 import 'react-calendar/dist/Calendar.css';
 
-const MealPlannerCalendar = ({ mealsData, onSelect, onRemove }) => {
+const MealPlannerCalendar = ({ mealsData, onSelect }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showMealDetails, setShowMealDetails] = useState(false);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const formatDate = (date) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString(undefined, options);
-  };
-
-  const day = selectedDate.toLocaleDateString(undefined, { weekday: 'long' });
-  const date = formatDate(selectedDate);
-  const meals = mealsData && mealsData[selectedDate.toDateString()] ? mealsData[selectedDate.toDateString()] : { Breakfast: null, Lunch: null, Dinner: null };
-
-  console.log("Selected Date:", selectedDate);
-  console.log("Meals Data:", mealsData);
-  console.log("Meals for Selected Date:", meals);
+  const formatDate = (date) => date.toDateString(); 
+  const selectedDay = formatDate(selectedDate);
+  const meals = mealsData[selectedDay] || { Breakfast: null, Lunch: null, Dinner: null };
 
   return (
     <div className="meal-planner-calendar">
-      <Calendar onChange={handleDateChange} value={selectedDate} />
-      <MealDayCard day={day} date={date} meals={meals} onSelect={onSelect} onRemove={onRemove} />
+      <Calendar 
+        onChange={(date) => {
+          setSelectedDate(date);
+          setShowMealDetails(true);
+        }} 
+        value={selectedDate} 
+      />
+
+      {showMealDetails && (
+        <div className="meal-details">
+          <h3>Meal Plan for {selectedDay}</h3>
+          {["Breakfast", "Lunch", "Dinner"].map((mealType) => (
+            <div key={mealType} className="meal-entry">
+              <h4>{mealType}</h4>
+              {meals[mealType] ? (
+                <p>{meals[mealType].title}</p>
+              ) : (
+                <p>No meal planned</p>
+              )}
+              {/* Add Recipe Button */}
+              <button onClick={() => onSelect(selectedDay, mealType)}>Add Recipe</button>
+            </div>
+          ))}
+          <button onClick={() => setShowMealDetails(false)}>Close</button>
+        </div>
+      )}
     </div>
   );
 };
@@ -35,7 +46,6 @@ const MealPlannerCalendar = ({ mealsData, onSelect, onRemove }) => {
 MealPlannerCalendar.propTypes = {
   mealsData: PropTypes.object.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired,
 };
 
 export default MealPlannerCalendar;
