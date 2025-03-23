@@ -8,8 +8,7 @@ import LogoutButton from './LogoutButton';
 function NavbarBrand() {
   return (
     <NavLink className="navbar-brand" to="/">
-      <img src="/logo.png" alt="Logo" style={{ height: '100px' }} />{' '}
-      {/* Adjust the height as needed */}
+      <img src="/logo.png" alt="Logo" style={{ height: '100px' }} /> 
     </NavLink>
   );
 }
@@ -57,6 +56,10 @@ function NavbarNav() {
 }
 
 function NavbarDropdown({ user }) {
+  const displayName = user?.fname && user?.lname 
+    ? `${user.fname} ${user.lname}` 
+    : user?.email;
+
   return (
     <li className="nav-item dropdown">
       <a
@@ -66,9 +69,9 @@ function NavbarDropdown({ user }) {
         role="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px' }} // Set the text and background color to black
+        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px' }}
       >
-        {user.fname} {user.lname}
+        {displayName}
       </a>
       <ul
         className="dropdown-menu dropdown-menu-end rounded-dropdown"
@@ -94,31 +97,59 @@ function NavbarDropdown({ user }) {
   );
 }
 
+
 function Header() {
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, loginWithRedirect, logout, isLoading } = useAuth0();
   const [userData, setUserData] = useState(null);
 
-  const fetchUserByEmail = async (email) => {
+  const fetchUserById = async (auth0Id, email) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/email/${email}`);
+      const response = await fetch(`http://localhost:3000/users/auth0/${auth0Id}`);
+  
+      if (response.status === 404) {
+        // If user doesn't exist, create them in the backend
+        const createResponse = await fetch('http://localhost:3000/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email, 
+            auth0Id,
+            fname: user.given_name,
+            lname: user.family_name,
+            username: user.nickname 
+          }),
+        });
+  
+        if (!createResponse.ok) {
+          throw new Error('Failed to create user');
+        }
+  
+        return await createResponse.json(); // Return newly created user
+      }
+  
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
-      const data = await response.json();
-      return data;
+  
+      return await response.json(); // Return existing user data
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Error handling user data:', error);
       return null;
     }
   };
-
+  
   useEffect(() => {
-    if (isAuthenticated && user) {
-      fetchUserByEmail(user.email)
+    if (isAuthenticated && user?.sub && user?.email) {
+      console.log("Auth0 ID:", user.sub);
+      console.log("Email:", user.email);
+  
+      fetchUserById(user.sub, user.email)
         .then((data) => setUserData(data))
         .catch((error) => console.error('Error fetching user data:', error));
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user]); // Remove userData from dependencies
+  
+  
 
   return (
     <nav className="navbar navbar-expand-lg">
@@ -135,7 +166,8 @@ function Header() {
                 <NavbarDropdown user={userData} />
               ) : (
                 <li className="nav-item">
-                  <LoginButton />
+                  {/* Trigger loginWithRedirect when user is not authenticated */}
+                  <LoginButton onClick={() => loginWithRedirect()} className="btn btn-primary"></LoginButton>
                 </li>
               )}
             </ul>

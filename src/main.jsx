@@ -1,29 +1,27 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './App.css';
-import App from './App.jsx';
+import React from 'react';
+import ReactDOM from 'react-dom/client'; 
+import { BrowserRouter as Router } from 'react-router-dom'; // Import Router
 import { Auth0Provider } from '@auth0/auth0-react';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-library.add(faPlus);
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
 const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+const redirectUri = window.location.origin; // The URL to redirect to after login
 
-console.log('Auth0 Domain:', domain);
-console.log('Auth0 Client ID:', clientId);
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      redirectUri={window.location.origin}
-    >
+// Wrap App with both Auth0Provider and Router
+root.render(
+  <Auth0Provider
+    domain={domain}
+    clientId={clientId}
+    authorizationParams={{ redirect_uri: redirectUri }} // Ensure redirect_uri is set here
+  >
+    <Router>
       <App />
-    </Auth0Provider>
-  </StrictMode>,
+    </Router>
+  </Auth0Provider>
 );
