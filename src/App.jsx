@@ -14,6 +14,8 @@ import Profile from './components/Profile';
 import MyRecipes from './pages/MyRecipes';
 import MealPlannerPage from './pages/MealPlannerPage';
 import LoginButton from './components/LoginButton';
+import ShoppingList from './pages/ShoppingList';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -38,10 +40,11 @@ function App() {
         <Route path="/contact" element={<Contact />} />
 
         {/* Protected Routes */}
-        <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <LoginButton />} />
-        <Route path="/profile" element={isAuthenticated ? <Profile /> : <LoginButton />} />
-        <Route path="/my-recipes" element={isAuthenticated ? <MyRecipes /> : <LoginButton />} />
-        <Route path="/mealplan" element={isAuthenticated ? <MealPlannerPage /> : <LoginButton />} />
+        <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />
+        <Route path="/profile" element={<ProtectedRoute component={Profile} />} />
+        <Route path="/my-recipes" element={<ProtectedRoute component={MyRecipes} />} />
+        <Route path="/mealplan" element={<ProtectedRoute component={MealPlannerPage} />} />
+        <Route path="/shoppinglist" element={<ProtectedRoute component={ShoppingList} />} />
         
         {/* Public Route */}
         <Route path="/login" element={<LoginButton />} />

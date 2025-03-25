@@ -30,7 +30,7 @@ function Dashboard() {
             <div className="card-body">
               <h5 className="card-title">Shopping List</h5>
               <p className="card-text">View and manage your shopping lists.</p>
-              <a href="#" className="btn btn-primary btn-black">Go to Shopping List</a> {/* Add btn-black class */}
+              <Link to="/shoppinglist" className="btn btn-primary btn-black">Go to Shopping List</Link>
             </div>
           </div>
         </div>
