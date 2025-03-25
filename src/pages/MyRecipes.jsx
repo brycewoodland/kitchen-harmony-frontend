@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useRecipes } from '../hooks/useRecipes'; // Import the hook
 import RecipeCard from '../components/Recipe/RecipeCard';
 import RecipeModal from '../components/Recipe/RecipeModal';
 import RecipeEditForm from '../components/Recipe/RecipeEditForm';
@@ -9,6 +10,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 const MyRecipes = () => {
   const { user, isAuthenticated } = useAuth0();
+  const { fetchRecipes, addRecipe, updateRecipe, deleteRecipe } = useRecipes();
   const [recipes, setRecipes] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -22,13 +24,11 @@ const MyRecipes = () => {
       const fetchUserIdFromMongo = async () => {
         try {
           const response = await fetch(`http://localhost:3000/users/email/${user.email}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-          }
+          if (!response.ok) throw new Error('Failed to fetch user data');
           const data = await response.json();
           setUserId(data._id);
         } catch (error) {
-          console.error('Error fetching userId from MongoDB:', error);
+          console.error('Error fetching userId:', error);
         }
       };
       fetchUserIdFromMongo();
@@ -37,70 +37,44 @@ const MyRecipes = () => {
 
   useEffect(() => {
     if (isAuthenticated && userId) {
-      const url = viewMyRecipes
-        ? `http://localhost:3000/recipe/user/${userId}`
-        : 'http://localhost:3000/recipe';
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => setRecipes(data))
-        .catch((error) => console.error('Error fetching recipes:', error));
+      fetchRecipes(userId, viewMyRecipes).then(setRecipes);
     }
   }, [isAuthenticated, userId, viewMyRecipes]);
 
   const handleAddRecipe = async (newRecipe) => {
     if (!userId) return;
-    try {
-      const response = await fetch(`http://localhost:3000/recipe/user/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newRecipe, userId }),
-      });
-      if (!response.ok) throw new Error('Failed to add recipe');
-      const addedRecipe = await response.json();
-      setRecipes((prevRecipes) => [...prevRecipes, addedRecipe]);
+    const addedRecipe = await addRecipe(userId, newRecipe);
+    if (addedRecipe) {
+      setRecipes((prev) => [...prev, addedRecipe]);
       setShowForm(false);
-    } catch (error) {
-      console.error('Error adding recipe:', error);
     }
   };
 
-  const handleUpdateRecipe = (updatedRecipe) => {
+  const handleUpdateRecipe = async (updatedRecipe) => {
     if (!userId) return;
-    fetch(`http://localhost:3000/recipe/${updatedRecipe._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedRecipe),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        setRecipes((prevRecipes) =>
-          prevRecipes.map((recipe) => (recipe._id === updatedRecipe._id ? { ...recipe, ...updatedRecipe } : recipe))
-        );
-        setIsEditing(false);
-        setEditableRecipe(null);
-        setSelectedRecipe(null);
-      })
-      .catch((error) => console.error('Error updating recipe:', error));
+    const success = await updateRecipe(updatedRecipe);
+    if (success) {
+      setRecipes((prev) =>
+        prev.map((recipe) => (recipe._id === updatedRecipe._id ? { ...recipe, ...updatedRecipe } : recipe))
+      );
+      setIsEditing(false);
+      setEditableRecipe(null);
+      setSelectedRecipe(null);
+    }
   };
 
   const handleDeleteRecipe = async (recipeId) => {
     if (!userId) return;
-    try {
-      const response = await fetch(`http://localhost:3000/recipe/${recipeId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete recipe');
-      setRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe._id !== recipeId));
-    } catch (error) {
-      console.error('Error deleting recipe:', error);
+    const success = await deleteRecipe(recipeId);
+    if (success) {
+      setRecipes((prev) => prev.filter((recipe) => recipe._id !== recipeId));
     }
   };
 
   const handleCancelEdit = () => {
-    setIsEditing(false); // Exit edit mode
-    setEditableRecipe(null); // Optionally reset the editable recipe state
-    setSelectedRecipe(null); // Optionally close the modal or reset the selected recipe
+    setIsEditing(false);
+    setEditableRecipe(null);
+    setSelectedRecipe(null);
   };
 
   if (!isAuthenticated) {
@@ -113,11 +87,7 @@ const MyRecipes = () => {
       <div className="header-controls">
         <div className="toggle-recipes-container">
           <label className="toggle">
-            <input
-              type="checkbox"
-              checked={!viewMyRecipes}
-              onChange={() => setViewMyRecipes(!viewMyRecipes)}
-            />
+            <input type="checkbox" checked={!viewMyRecipes} onChange={() => setViewMyRecipes(!viewMyRecipes)} />
             <span className="slider">
               <span className="slider-text">{viewMyRecipes ? 'My Recipes' : 'Other Recipes'}</span>
             </span>
@@ -128,7 +98,7 @@ const MyRecipes = () => {
         </button>
       </div>
 
-      {showForm && <RecipeForm onAddRecipe={handleAddRecipe} />}
+      {showForm && <RecipeForm onAddRecipe={handleAddRecipe} closeModal={() => setShowForm(false)} />}
 
       {!showForm && (
         <div className="recipes-list row">
@@ -154,11 +124,6 @@ const MyRecipes = () => {
         <RecipeEditForm
           editableRecipe={editableRecipe}
           onInputChange={(e) => setEditableRecipe({ ...editableRecipe, [e.target.name]: e.target.value })}
-          onIngredientChange={(index, e) => {
-            const updatedIngredients = [...editableRecipe.ingredients];
-            updatedIngredients[index] = { ...updatedIngredients[index], [e.target.name]: e.target.value };
-            setEditableRecipe({ ...editableRecipe, ingredients: updatedIngredients });
-          }}
           onSave={handleUpdateRecipe}
           onCancel={handleCancelEdit}
         />

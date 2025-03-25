@@ -1,27 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; 
-import { BrowserRouter as Router } from 'react-router-dom'; // Import Router
-import { Auth0Provider } from '@auth0/auth0-react';
+import ReactDOM from 'react-dom/client';
 import App from './App';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-
-const domain = import.meta.env.VITE_AUTH0_DOMAIN;
-const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-const redirectUri = window.location.origin; // The URL to redirect to after login
+console.log("VITE_AUTH0_DOMAIN:", import.meta.env.VITE_AUTH0_DOMAIN); // Add this line
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-// Wrap App with both Auth0Provider and Router
 root.render(
-  <Auth0Provider
-    domain={domain}
-    clientId={clientId}
-    authorizationParams={{ redirect_uri: redirectUri }} // Ensure redirect_uri is set here
-  >
-    <Router>
-      <App />
-    </Router>
-  </Auth0Provider>
+  <React.StrictMode>
+    <BrowserRouter>
+      <Auth0Provider
+        domain={import.meta.env.VITE_AUTH0_DOMAIN}
+        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          audience: "http://localhost:3000"
+        }}
+        
+      >
+        <App />
+      </Auth0Provider>
+    </BrowserRouter>
+  </React.StrictMode>
 );

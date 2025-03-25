@@ -7,6 +7,7 @@ const LoginButton = () => {
   const [userData, setUserData] = useState(null);
   const hasFetched = useRef(false); // Flag to track if we've already fetched or created the user
 
+  // Function to check if the user already exists or create them
   useEffect(() => {
     if (isAuthenticated && user && user.sub && user.email && !hasFetched.current) {
       hasFetched.current = true; // Mark that we've started fetching data for this user
