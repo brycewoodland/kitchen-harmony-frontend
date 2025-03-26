@@ -8,7 +8,6 @@ export const useRecipes = () => {
   const fetchRecipes = async (userId, viewMyRecipes) => {
     try {
       const accessToken = await getAccessTokenSilently();  // Fetch access token
-      console.log("Access Token:", accessToken);  // Now log the token after it's been fetched
 
       const url = viewMyRecipes ? `${API_BASE_URL}/user/${userId}` : API_BASE_URL;
 
@@ -23,6 +22,23 @@ export const useRecipes = () => {
       return await response.json();
     } catch (error) {
       console.error('Error fetching recipes:', error);
+      return [];
+    }
+  };
+
+  const fetchAllRecipes = async () => {
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch all recipes');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching all recipes:', error);
       return [];
     }
   };
@@ -85,5 +101,5 @@ export const useRecipes = () => {
     }
   };
 
-  return { fetchRecipes, addRecipe, updateRecipe, deleteRecipe };
+  return { fetchRecipes, fetchAllRecipes, addRecipe, updateRecipe, deleteRecipe };
 };

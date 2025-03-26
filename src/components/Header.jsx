@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import '../App.css';
-import LoginButton from './LoginButton';
-import LogoutButton from './LogoutButton';
+import React, { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useUsers } from "../hooks/useUser"; // Import custom hook
+import "../App.css";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
 
 function NavbarBrand() {
   return (
     <NavLink className="navbar-brand" to="/">
-      <img src="/logo.png" alt="Logo" style={{ height: '100px' }} /> 
+      <img src="/logo.png" alt="Logo" style={{ height: "100px" }} />
     </NavLink>
   );
 }
@@ -22,7 +23,8 @@ function NavbarToggler() {
       data-bs-target="#navbarScroll"
       aria-controls="navbarScroll"
       aria-expanded="false"
-      aria-label="Toggle navigation">
+      aria-label="Toggle navigation"
+    >
       <span className="navbar-toggler-icon"></span>
     </button>
   );
@@ -32,22 +34,22 @@ function NavbarNav() {
   return (
     <ul className="navbar-nav mx-auto justify-content-center">
       <li className="nav-item">
-        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/">
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`} to="/">
           Home
         </NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/about">
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`} to="/about">
           About Us
         </NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/services">
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`} to="/services">
           Services
         </NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/contact">
+        <NavLink className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`} to="/contact">
           Contact
         </NavLink>
       </li>
@@ -56,9 +58,7 @@ function NavbarNav() {
 }
 
 function NavbarDropdown({ user }) {
-  const displayName = user?.fname && user?.lname 
-    ? `${user.fname} ${user.lname}` 
-    : user?.email;
+  const displayName = user?.fname && user?.lname ? `${user.fname} ${user.lname}` : user?.email;
 
   return (
     <li className="nav-item dropdown">
@@ -69,13 +69,11 @@ function NavbarDropdown({ user }) {
         role="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px' }}
+        style={{ color: "white", backgroundColor: "black", borderRadius: "8px", padding: "10px" }}
       >
         {displayName}
       </a>
-      <ul
-        className="dropdown-menu dropdown-menu-end rounded-dropdown"
-        aria-labelledby="navbarDropdown">
+      <ul className="dropdown-menu dropdown-menu-end rounded-dropdown" aria-labelledby="navbarDropdown">
         <li>
           <Link className="dropdown-item" to="/dashboard">
             Dashboard
@@ -97,59 +95,21 @@ function NavbarDropdown({ user }) {
   );
 }
 
-
 function Header() {
-  const { isAuthenticated, user, loginWithRedirect, logout, isLoading } = useAuth0();
+  const { isAuthenticated, user, loginWithRedirect } = useAuth0();
+  const { getOrCreateUser } = useUsers(); // Use custom hook
   const [userData, setUserData] = useState(null);
 
-  const fetchUserById = async (auth0Id, email) => {
-    try {
-      const response = await fetch(`http://localhost:3000/users/auth0/${auth0Id}`);
-  
-      if (response.status === 404) {
-        // If user doesn't exist, create them in the backend
-        const createResponse = await fetch('http://localhost:3000/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            email, 
-            auth0Id,
-            fname: user.given_name,
-            lname: user.family_name,
-            username: user.nickname 
-          }),
-        });
-  
-        if (!createResponse.ok) {
-          throw new Error('Failed to create user');
-        }
-  
-        return await createResponse.json(); // Return newly created user
-      }
-  
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-  
-      return await response.json(); // Return existing user data
-    } catch (error) {
-      console.error('Error handling user data:', error);
-      return null;
-    }
-  };
-  
   useEffect(() => {
     if (isAuthenticated && user?.sub && user?.email) {
       console.log("Auth0 ID:", user.sub);
       console.log("Email:", user.email);
-  
-      fetchUserById(user.sub, user.email)
+
+      getOrCreateUser(user.sub, user.email, user.given_name, user.family_name, user.nickname)
         .then((data) => setUserData(data))
-        .catch((error) => console.error('Error fetching user data:', error));
+        .catch((error) => console.error("Error fetching user data:", error));
     }
-  }, [isAuthenticated, user]); // Remove userData from dependencies
-  
-  
+  }, [isAuthenticated, user, getOrCreateUser]);
 
   return (
     <nav className="navbar navbar-expand-lg">
@@ -166,8 +126,7 @@ function Header() {
                 <NavbarDropdown user={userData} />
               ) : (
                 <li className="nav-item">
-                  {/* Trigger loginWithRedirect when user is not authenticated */}
-                  <LoginButton onClick={() => loginWithRedirect()} className="btn btn-primary"></LoginButton>
+                  <LoginButton onClick={() => loginWithRedirect()} className="btn btn-primary" />
                 </li>
               )}
             </ul>

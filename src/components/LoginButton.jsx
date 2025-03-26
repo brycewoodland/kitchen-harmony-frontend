@@ -1,45 +1,43 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
+import React, { useEffect, useState, useRef } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useUsers } from "../hooks/useUser"; // Import the custom hook
 
 const LoginButton = () => {
   const { loginWithRedirect, user, isAuthenticated, isLoading, error } = useAuth0();
+  const { createUser, getUserById } = useUsers(); // Use custom hook
   const [userData, setUserData] = useState(null);
-  const hasFetched = useRef(false); // Flag to track if we've already fetched or created the user
+  const hasFetched = useRef(false); // Flag to prevent duplicate requests
 
-  // Function to check if the user already exists or create them
   useEffect(() => {
     if (isAuthenticated && user && user.sub && user.email && !hasFetched.current) {
       hasFetched.current = true; // Mark that we've started fetching data for this user
+
       const { email, sub: auth0Id } = user;
 
-      console.log('Auth0 ID:', auth0Id); // Log the Auth0 ID
-      console.log('Email:', email); // Log the email
+      console.log("Auth0 ID:", auth0Id);
+      console.log("Email:", email);
 
       // Fetch user by Auth0 ID
-      axios.get(`http://localhost:3000/users/auth0/${auth0Id}`)
-        .then(response => {
-          if (response.data) {
-            // User already exists
-            console.log('User already exists:', response.data);
-            setUserData(response.data); // Store user data
+      getUserById(auth0Id)
+        .then((existingUser) => {
+          if (existingUser) {
+            console.log("User already exists:", existingUser);
+            setUserData(existingUser);
           } else {
             // User doesn't exist, create the user
-            axios.post('http://localhost:3000/users', { email, auth0Id })
-              .then(createResponse => {
-                console.log('User created:', createResponse.data);
-                setUserData(createResponse.data); // Store new user data
-              })
-              .catch(error => {
-                console.error('Error creating user:', error);
-              });
+            createUser({ email, auth0Id }).then((newUser) => {
+              if (newUser) {
+                console.log("User created:", newUser);
+                setUserData(newUser);
+              }
+            });
           }
         })
-        .catch(error => {
-          console.error('Error checking user existence:', error);
+        .catch((error) => {
+          console.error("Error checking user existence:", error);
         });
     }
-  }, [isAuthenticated, user]); // Only re-run if isAuthenticated or user changes
+  }, [isAuthenticated, user, getUserById, createUser]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -54,7 +52,7 @@ const LoginButton = () => {
       <button
         onClick={() => loginWithRedirect()}
         className="btn btn-primary"
-        style={{ color: 'white', backgroundColor: 'black', borderRadius: '8px', padding: '10px' }}
+        style={{ color: "white", backgroundColor: "black", borderRadius: "8px", padding: "10px" }}
       >
         Login
       </button>
