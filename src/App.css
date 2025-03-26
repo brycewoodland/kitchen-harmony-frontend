@@ -3,7 +3,8 @@
 }
 
 /* Remove blue hover effect in dropdown */
-.dropdown-item:focus, .dropdown-item:active {
+.dropdown-item:focus,
+.dropdown-item:active {
   background-color: transparent;
   color: inherit;
   text-decoration: none;
@@ -24,15 +25,19 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3); /* Reduce the opacity for a clearer background image */
+  background-color: rgba(0, 0, 0, 0.3);
+  /* Reduce the opacity for a clearer background image */
   display: flex;
-  justify-content: flex-start; /* Align items to the start (left) */
+  justify-content: flex-start;
+  /* Align items to the start (left) */
   align-items: center;
-  padding-left: 50px; /* Add some padding to the left */
+  padding-left: 50px;
+  /* Add some padding to the left */
 }
 
 .hero-content {
-  text-align: left; /* Align text to the left */
+  text-align: left;
+  /* Align text to the left */
   color: white;
 }
 
@@ -42,7 +47,8 @@
 }
 
 .login-form {
-  background-color: rgba(255, 255, 255, 0.8); /* Make the form background semi-transparent */
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Make the form background semi-transparent */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -134,7 +140,8 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Always have three columns */
+  grid-template-columns: repeat(3, 1fr);
+  /* Always have three columns */
   gap: 40px;
   padding: 40px;
 }
@@ -270,7 +277,8 @@
 
 /* Dashboard */
 .dashboard-title {
-  margin-bottom: 20px; /* Add margin-bottom to the header */
+  margin-bottom: 20px;
+  /* Add margin-bottom to the header */
 }
 
 .btn-black {
@@ -489,11 +497,11 @@
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #007bff;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(86px);
 }
 
@@ -508,7 +516,7 @@ input:checked + .slider:before {
   transition: 0.4s;
 }
 
-input:checked + .slider .slider-text {
+input:checked+.slider .slider-text {
   transform: translateX(-86px);
 }
 
@@ -519,21 +527,27 @@ input:checked + .slider .slider-text {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
   margin-bottom: 20px;
-  max-width: 300px; /* Make the card a little bit smaller */
-  margin: 0 auto; /* Center the card horizontally */
+  max-width: 300px;
+  /* Make the card a little bit smaller */
+  margin: 0 auto;
+  /* Center the card horizontally */
 }
 
 .recipe-card .card-img-top {
   width: 100%;
   height: auto;
-  max-height: 200px; /* Limit the height of the image */
-  object-fit: contain; /* Ensure the image covers the area without stretching */
-  padding: 10px; /* Add padding around the image */
+  max-height: 200px;
+  /* Limit the height of the image */
+  object-fit: contain;
+  /* Ensure the image covers the area without stretching */
+  padding: 10px;
+  /* Add padding around the image */
 }
 
 .recipe-card .card-body {
   padding: 16px;
-  text-align: center; /* Center the text in the card */
+  text-align: center;
+  /* Center the text in the card */
 }
 
 .recipe-card .card-title {
@@ -565,10 +579,13 @@ input:checked + .slider .slider-text {
   background: white;
   padding: 20px;
   border-radius: 12px;
-  width: 600px; /* Wider but not too big */
+  width: 600px;
+  /* Wider but not too big */
   max-width: 90%;
-  max-height: 80vh; /* Prevents it from going off-screen */
-  overflow-y: auto; /* Scrolls if content overflows */
+  max-height: 80vh;
+  /* Prevents it from going off-screen */
+  overflow-y: auto;
+  /* Scrolls if content overflows */
   text-align: center;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   transform: scale(0.95);
@@ -582,6 +599,7 @@ input:checked + .slider .slider-text {
     transform: scale(0.5);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -721,8 +739,13 @@ input:checked + .slider .slider-text {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Recipe Edit Form */
@@ -798,78 +821,186 @@ input:checked + .slider .slider-text {
 .recipe-edit-form .button-container {
   display: flex;
   justify-content: space-between;
-  gap: 15px; /* Add gap between Save and Cancel buttons */
+  gap: 15px;
+  /* Add gap between Save and Cancel buttons */
 }
 
 .recipe-edit-form .button-container button {
-  width: 48%; /* Make buttons take equal space */
+  width: 48%;
+  /* Make buttons take equal space */
 }
 
 .recipe-edit-form .cancel-button {
-  background-color: #f44336; /* Red for cancel */
+  background-color: #f44336;
+  /* Red for cancel */
 }
 
 .recipe-edit-form .cancel-button:hover {
-  background-color: #d32f2f; /* Darker red on hover */
+  background-color: #d32f2f;
+  /* Darker red on hover */
 }
 
-/** MealPlannerPage **/
-/* MealPlanner.css */
+/* Meal Planner Styles */
+.meal-planner-page {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
 .meal-planner-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.meal-planner-container h2,
-.meal-planner-container h3 {
+.meal-plan-selector {
+  margin-bottom: 30px;
+}
+
+.meal-plan-title {
+  font-size: 2rem;
   color: #333;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-.meal-planner-form,
-.meal-planner-calendar,
-.meal-planner-add-meal,
+.meal-planner-add-meal {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.meal-planner-add-meal h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.25rem;
+}
+
 .meal-planner-meals {
-  margin-bottom: 20px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
 }
 
-.meal-planner-form input,
-.meal-planner-form button,
-.meal-planner-add-meal select,
-.meal-planner-add-meal button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.meal-planner-form button,
-.meal-planner-add-meal button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.meal-planner-form button:hover,
-.meal-planner-add-meal button:hover {
-  background-color: #218838;
+.meal-planner-meals h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.25rem;
 }
 
 .meal-planner-meals ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .meal-planner-meals li {
-  background-color: #fff;
-  padding: 10px;
+  background-color: white;
+  padding: 12px 15px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+.meal-planner-calendar {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.meal-planner-calendar h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.25rem;
+}
+
+/* Calendar customization */
+.react-calendar {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.react-calendar__tile {
+  padding: 1em 0.5em;
+  font-size: 0.9em;
+}
+
+.react-calendar__tile--active {
+  background: #007bff !important;
+  color: white;
+}
+
+.react-calendar__tile--now {
+  background: #e9ecef;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #f8f9fa;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #dc3545;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #6c757d;
+}
+
+/* Form controls */
+.form-control {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .meal-planner-container {
+    padding: 20px;
+  }
+
+  .meal-plan-title {
+    font-size: 1.5rem;
+  }
+
+  .react-calendar {
+    font-size: 0.9em;
+  }
 }

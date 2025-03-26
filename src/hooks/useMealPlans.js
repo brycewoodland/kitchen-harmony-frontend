@@ -177,20 +177,32 @@ export const useMealPlan = () => {
 
     try {
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${API_URL}/${mealPlanId}/add-recipe`, {
-        method: "POST",
+      console.log('Adding meal to plan:', { mealPlanId, mealData }); // Debug log
+
+      // First, get the current meal plan
+      const currentMealPlan = await fetchMealPlanById(mealPlanId);
+
+      // Add the new meal to the meals array
+      const updatedMeals = [...(currentMealPlan.meals || []), mealData];
+
+      // Update the meal plan with the new meals array
+      const response = await fetch(`${API_URL}/${mealPlanId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(mealData),
+        body: JSON.stringify({ meals: updatedMeals }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to add meal to plan");
       }
-      return await response.json();
+
+      // After successful update, fetch the updated meal plan
+      const updatedMealPlan = await fetchMealPlanById(mealPlanId);
+      return updatedMealPlan;
     } catch (error) {
       console.error("Error adding meal to plan:", error);
       throw error;
