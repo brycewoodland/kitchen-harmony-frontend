@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useMealPlan } from '../hooks/useMealPlans'; 
 import { useAuth0 } from "@auth0/auth0-react";
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import { useRecipes } from '../hooks/useRecipes';
-import '../App.css';
+import MealPlanForm from '../components/MealPlanner/MealPlanForm';
+import MealPlanSelector from '../components/MealPlanner/MealPlanSelector';
+import AddMealForm from '../components/MealPlanner/AddMealForm';
+import MealList from '../components/MealPlanner/MealList';
+import CalendarView from '../components/MealPlanner/CalendarView';
 
 const MealPlanner = () => {
   const { createMealPlan, addMealToPlan, fetchMealPlanByUser } = useMealPlan();
@@ -170,96 +173,43 @@ const MealPlanner = () => {
   return (
     <div className="meal-planner-page">
       <div className="meal-planner-container">
-        {/* Meal Plan Creation Form - Always visible */}
-        <div className="meal-planner-form">
-          <h2>Create a New Meal Plan</h2>
-          <form onSubmit={handleMealPlanSubmit}>
-            <input
-              type="text"
-              placeholder="Meal Plan Name"
-              value={mealPlanName}
-              onChange={(e) => setMealPlanName(e.target.value)}
-              className="form-control"
-              required
-            />
-            <button type="submit" className="btn-primary">Create Meal Plan</button>
-          </form>
-        </div>
+        <MealPlanForm 
+          onSubmit={handleMealPlanSubmit}
+          mealPlanName={mealPlanName}
+          setMealPlanName={setMealPlanName}
+        />
 
-        {/* Meal Plan Selector - Only show if there are meal plans */}
         {allMealPlans.length > 0 && (
-          <div className="meal-plan-selector">
-            <h3>Select Your Meal Plan</h3>
-            <select 
-              value={mealPlanId || ''} 
-              onChange={handleMealPlanSelect}
-              className="form-control"
-            >
-              <option value="">Select a meal plan...</option>
-              {allMealPlans.map((plan) => (
-                <option key={plan._id} value={plan._id}>
-                  {plan.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <MealPlanSelector 
+            mealPlanId={mealPlanId}
+            allMealPlans={allMealPlans}
+            onSelect={handleMealPlanSelect}
+          />
         )}
 
-        {/* Current Meal Plan Content */}
         {mealPlanId && currentMealPlan && (
           <>
             <h2 className="meal-plan-title">{currentMealPlan.name}</h2>
             
-            {/* Add meals to the selected date */}
-            <div className="meal-planner-add-meal">
-              <h3>Add Meal to {selectedDate.toLocaleDateString()}</h3>
-              <select 
-                value={selectedRecipe?._id || ''}
-                onChange={(e) => setSelectedRecipe(recipes.find(r => r._id === e.target.value))}
-                className="form-control"
-              >
-                <option value="">Select a recipe</option>
-                {recipes.map((recipe) => (
-                  <option key={recipe._id} value={recipe._id}>
-                    {recipe.title}
-                  </option>
-                ))}
-              </select>
-              <button 
-                onClick={handleAddMealToDay} 
-                className="btn-primary"
-                disabled={!selectedRecipe}
-              >
-                Add Meal
-              </button>
-            </div>
+            <AddMealForm 
+              selectedDate={selectedDate}
+              recipes={recipes}
+              selectedRecipe={selectedRecipe}
+              onRecipeSelect={setSelectedRecipe}
+              onAddMeal={handleAddMealToDay}
+            />
 
-            {/* Display meals for the selected date */}
-            <div className="meal-planner-meals">
-              <h3>Meals for {selectedDate.toLocaleDateString()}</h3>
-              <ul>
-                {mealsForSelectedDate.map((meal) => (
-                  <li key={`${meal.recipeId}-${meal.date}`}>
-                    {meal.title}
-                  </li>
-                ))}
-                {mealsForSelectedDate.length === 0 && (
-                  <li className="no-meals">No meals planned for this date</li>
-                )}
-              </ul>
-            </div>
+            <MealList 
+              selectedDate={selectedDate}
+              mealsForSelectedDate={mealsForSelectedDate}
+            />
           </>
         )}
 
-        {/* Calendar to select date */}
-        <div className="meal-planner-calendar">
-          <h3>Select a Date for Your Meal Plan</h3>
-          <Calendar
-            onChange={handleDateChange}
-            value={selectedDate}
-            className="react-calendar"
-          />
-        </div>
+        <CalendarView 
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+        />
       </div>
     </div>
   );

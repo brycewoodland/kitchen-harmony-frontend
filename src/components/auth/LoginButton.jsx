@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useUsers } from "../hooks/useUser"; // Import the custom hook
+import { useUsers } from "../../hooks/useUser"; // Updated import path
 
 const LoginButton = () => {
   const { loginWithRedirect, user, isAuthenticated, isLoading, error } = useAuth0();

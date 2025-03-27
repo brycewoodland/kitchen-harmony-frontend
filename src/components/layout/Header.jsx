@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useUsers } from "../hooks/useUser"; // Import custom hook
-import "../App.css";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import { useUsers } from "../../hooks/useUser";
+import LoginButton from "../auth/LoginButton";
+import LogoutButton from "../auth/LogoutButton";
 
 function NavbarBrand() {
   return (

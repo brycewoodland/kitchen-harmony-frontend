@@ -1,5 +1,213 @@
-.custom-margin-right {
-  margin-right: 6rem;
+/* Common Variables */
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --gray-light: #f8f9fa;
+  --gray-medium: #e9ecef;
+  --gray-dark: #666;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --transition: 0.3s ease;
+}
+
+/* Common Utility Classes */
+.container {
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.section {
+  margin-bottom: 2rem;
+  padding: 20px;
+  background-color: var(--gray-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.section-text {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Button Styles */
+.btn {
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition);
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Form Styles */
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--gray-medium);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: border-color var(--transition);
+}
+
+.form-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Toggle Button Styles */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  height: 40px;
+  background-color: var(--gray-medium);
+  border-radius: var(--border-radius);
+  padding: 3px;
+  box-shadow: var(--box-shadow);
+}
+
+.toggle input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.slider-text {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-dark);
+  transition: color var(--transition);
+  cursor: pointer;
+  user-select: none;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  height: calc(100% - 6px);
+  width: calc(50% - 6px);
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  border-radius: calc(var(--border-radius) - 2px);
+  transition: transform var(--transition);
+  box-shadow: var(--box-shadow);
+}
+
+input:checked+.slider:before {
+  transform: translateX(calc(100% + 6px));
+}
+
+input:not(:checked)+.slider .slider-text:first-child,
+input:checked+.slider .slider-text:last-child {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Recipe Card Styles */
+.recipe-card {
+  border: 1px solid var(--gray-medium);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  background-color: white;
+  margin-bottom: 20px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.recipe-card .card-img-top {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  padding: 10px;
+}
+
+.recipe-card .card-body {
+  padding: 16px;
+  text-align: center;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  width: 600px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: zoomIn 0.2s var(--transition) forwards;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .toggle {
+    width: 250px;
+  }
+
+  .modal {
+    width: 95%;
+  }
 }
 
 /* Remove blue hover effect in dropdown */
@@ -73,13 +281,6 @@
   border-radius: 4px;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
 .btn-primary:hover {
   background-color: #0056b3;
 }
@@ -130,12 +331,6 @@
 .cook-section-title {
   margin-top: 100px;
   padding: 30px;
-}
-
-.container {
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 }
 
 .grid-container {
@@ -462,11 +657,16 @@
   align-items: center;
 }
 
+/* Updated Toggle Button Styles */
 .toggle {
   position: relative;
   display: inline-block;
-  width: 120px;
-  height: 34px;
+  width: 300px;
+  height: 40px;
+  background-color: #e8e8e8;
+  border-radius: 8px;
+  padding: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .toggle input {
@@ -475,49 +675,65 @@
 
 .slider {
   position: absolute;
-  cursor: pointer;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked+.slider {
-  background-color: #007bff;
-}
-
-input:checked+.slider:before {
-  transform: translateX(86px);
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .slider-text {
-  position: absolute;
-  width: 100%;
+  position: relative;
+  z-index: 2;
+  flex: 1;
   text-align: center;
-  line-height: 34px;
-  color: white;
+  padding: 8px 0;
   font-size: 14px;
-  font-weight: bold;
-  transition: 0.4s;
+  font-weight: 500;
+  color: #666;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  user-select: none;
 }
 
-input:checked+.slider .slider-text {
-  transform: translateX(-86px);
+.slider:before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  height: calc(100% - 6px);
+  width: calc(50% - 6px);
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  border-radius: 6px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+input:checked+.slider:before {
+  transform: translateX(calc(100% + 6px));
+}
+
+/* Active state text colors */
+input:not(:checked)+.slider .slider-text:first-child {
+  color: #007bff;
+  font-weight: 600;
+}
+
+input:not(:checked)+.slider .slider-text:last-child {
+  color: #666;
+}
+
+input:checked+.slider .slider-text:first-child {
+  color: #666;
+}
+
+input:checked+.slider .slider-text:last-child {
+  color: #007bff;
+  font-weight: 600;
 }
 
 .recipe-card {
@@ -822,12 +1038,10 @@ input:checked+.slider .slider-text {
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  /* Add gap between Save and Cancel buttons */
 }
 
 .recipe-edit-form .button-container button {
   width: 48%;
-  /* Make buttons take equal space */
 }
 
 .recipe-edit-form .cancel-button {
@@ -843,7 +1057,7 @@ input:checked+.slider .slider-text {
 /* Meal Planner Styles */
 .meal-planner-page {
   padding: 40px 20px;
-  background-color: #f9f9f9;
+  background-color: var(--gray-light);
   min-height: 100vh;
 }
 
@@ -852,32 +1066,46 @@ input:checked+.slider .slider-text {
   margin: 0 auto;
   padding: 30px;
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .meal-plan-selector {
   margin-bottom: 30px;
+  padding: 25px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--gray-medium);
 }
 
 .meal-plan-title {
   font-size: 2rem;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
 .meal-planner-add-meal {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: white;
+  padding: 30px;
+  border-radius: var(--border-radius);
   margin-bottom: 30px;
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--gray-medium);
+  text-align: center;
 }
 
 .meal-planner-add-meal h3 {
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-size: 1.25rem;
+}
+
+.meal-planner-add-meal .btn-primary {
+  margin: 15px auto;
+  min-width: 200px;
+  font-weight: 500;
 }
 
 .meal-planner-meals {

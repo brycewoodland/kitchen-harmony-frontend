@@ -1,21 +1,22 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import RecipeHome from './components/RecipeHome';
-import CookSection from './components/CookSection';
-import Footer from './components/Footer';
-import Contact from './components/Contact'; 
-import AboutUs from './components/AboutUs';
-import Service from './components/Service';
-import Dashboard from './components/Dashboard';
-import Profile from './components/Profile';
+import './App.css';
+import Header from './components/layout/Header';
+import Hero from './components/layout/Hero';
+import RecipeHome from './pages/RecipeHome';
+import CookSection from './components/common/CookSection';
+import Footer from './components/layout/Footer';
+import Contact from './pages/Contact'; 
+import AboutUs from './pages/AboutUs';
+import Service from './components/common/Service';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 import MyRecipes from './pages/MyRecipes';
-import MealPlannerPage from './pages/MealPlannerPage';
-import LoginButton from './components/LoginButton';
+import MealPlannerPage from './pages/MealPlanner';
+import LoginButton from './components/auth/LoginButton';
 import ShoppingList from './pages/ShoppingList';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
