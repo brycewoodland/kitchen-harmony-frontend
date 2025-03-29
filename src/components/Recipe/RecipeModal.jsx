@@ -1,8 +1,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const RecipeModal = ({ recipe, userId, onClose, onEditClick }) => {
+const RecipeModal = ({ recipe, userId, onClose, onEditClick, onDelete }) => {
   return (
     <div className="recipe-modal-overlay">
       <div className="recipe-modal">
@@ -25,10 +25,16 @@ const RecipeModal = ({ recipe, userId, onClose, onEditClick }) => {
 
         {/* Show Edit Recipe button only if user is the owner */}
         {recipe.userId === userId && (
-          <button onClick={() => onEditClick(recipe)}>
-            <FontAwesomeIcon icon={faEdit} />
-            Edit Recipe
-          </button>
+          <>
+            <button className="edit-button" onClick={() => onEditClick(recipe)}>
+              <FontAwesomeIcon icon={faEdit} />
+              Edit Recipe
+            </button>
+            <button onClick={() => onDelete(recipe._id)} className="delete-button">
+              <FontAwesomeIcon icon={faTrash} />
+              Delete Recipe
+            </button>
+          </>
         )}
       </div>
     </div>

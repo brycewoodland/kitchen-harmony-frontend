@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useUsers } from "../hooks/useUser"; // Import the custom hook
-import "../App.css";
+import { useUsers } from "../hooks/useUser";
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
-  const { getUserByEmail } = useUsers(); // Use custom hook
+  const { getUserByEmail } = useUsers();
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {

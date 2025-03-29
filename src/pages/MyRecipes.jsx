@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useRecipes } from '../hooks/useRecipes'; // Import the hook
+import { useRecipes } from '../hooks/useRecipes';
 import RecipeCard from '../components/Recipe/RecipeCard';
 import RecipeModal from '../components/Recipe/RecipeModal';
 import RecipeEditForm from '../components/Recipe/RecipeEditForm';
@@ -77,6 +77,14 @@ const MyRecipes = () => {
     setSelectedRecipe(null);
   };
 
+  const handleIngredientChange = (index, updatedIngredient) => {
+    setEditableRecipe(prevRecipe => {
+      const updatedIngredients = [...prevRecipe.ingredients];
+      updatedIngredients[index] = updatedIngredient; // Update the specific ingredient
+      return { ...prevRecipe, ingredients: updatedIngredients }; // Return the updated recipe
+    });
+  };
+
   if (!isAuthenticated) {
     return <div>Please log in to view your recipes.</div>;
   }
@@ -124,6 +132,7 @@ const MyRecipes = () => {
         <RecipeEditForm
           editableRecipe={editableRecipe}
           onInputChange={(e) => setEditableRecipe({ ...editableRecipe, [e.target.name]: e.target.value })}
+          onIngredientChange={handleIngredientChange} // Pass the new function here
           onSave={handleUpdateRecipe}
           onCancel={handleCancelEdit}
         />

@@ -1,5 +1,3 @@
-import '../App.css';
-
 function AboutUs() {
   return (
     <div className="container my-5">

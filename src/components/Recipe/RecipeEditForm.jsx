@@ -26,19 +26,19 @@ const RecipeEditForm = ({ editableRecipe, onInputChange, onIngredientChange, onS
             type="text"
             name="quantity"
             value={ingredient.quantity}
-            onChange={(e) => onIngredientChange(index, e)}
+            onChange={(e) => onIngredientChange(index, { ...ingredient, quantity: e.target.value })}
           />
           <input
             type="text"
             name="unit"
             value={ingredient.unit}
-            onChange={(e) => onIngredientChange(index, e)}
+            onChange={(e) => onIngredientChange(index, { ...ingredient, unit: e.target.value })}
           />
           <input
             type="text"
             name="name"
             value={ingredient.name}
-            onChange={(e) => onIngredientChange(index, e)}
+            onChange={(e) => onIngredientChange(index, { ...ingredient, name: e.target.value })}
           />
         </div>
       ))}

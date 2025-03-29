@@ -1,7 +1,8 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
+
 import Header from './components/layout/Header';
 import Hero from './components/layout/Hero';
 import RecipeHome from './pages/RecipeHome';
@@ -20,8 +21,17 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
+  const navigate = useNavigate();
+  const [hasLoggedIn, setHasLoggedIn] = useState(false); // Track login state
 
   // Show loading state while Auth0 is loading authentication state
+  useEffect(() => {
+    if (isAuthenticated && !hasLoggedIn) {
+      setHasLoggedIn(true); // Set the login state
+      navigate('/dashboard'); // Redirect to dashboard if authenticated
+    }
+  }, [isAuthenticated, navigate, hasLoggedIn]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }

@@ -9,7 +9,6 @@ import AddMealForm from '../components/MealPlanner/AddMealForm';
 import MealList from '../components/MealPlanner/MealList';
 import CalendarView from '../components/MealPlanner/CalendarView';
 import Toast from '../components/Toast';
-import '../styles/MealPlanner.css';
 
 const MealPlanner = () => {
   const { 
