@@ -9,6 +9,8 @@ import AddMealForm from '../components/MealPlanner/AddMealForm';
 import MealList from '../components/MealPlanner/MealList';
 import CalendarView from '../components/MealPlanner/CalendarView';
 import Toast from '../components/Toast';
+import { useShoppingLists } from '../hooks/useShoppingLists';
+import { isSameDay } from 'date-fns'; // Import date-fns for date comparison
 
 const MealPlanner = () => {
   const { 
@@ -20,6 +22,7 @@ const MealPlanner = () => {
   } = useMealPlan();
   const { isAuthenticated, user } = useAuth0();
   const { fetchAllRecipes } = useRecipes();
+  const { createShoppingList, updateShoppingList, fetchShoppingLists } = useShoppingLists();
 
   // Form states
   const [mealPlanName, setMealPlanName] = useState('');
@@ -173,6 +176,54 @@ const MealPlanner = () => {
       const updatedMealPlan = await addMealToPlan(mealPlanId, mealData);
       console.log('Updated meal plan:', updatedMealPlan);
 
+      // Gather ingredients from the current day and future meals
+      const allMeals = updatedMealPlan.meals.filter(meal => {
+        const mealDate = new Date(meal.date);
+        return mealDate >= new Date(); // Check if the meal date is today or in the future
+      });
+
+      // Prepare shopping list data
+      const shoppingListData = {
+        title: `Shopping List for ${selectedRecipe.title}`,
+        items: []
+      };
+
+      // Create a Set to track unique ingredient names
+      const ingredientSet = new Set();
+
+      allMeals.forEach(meal => {
+        const recipe = recipes.find(r => r._id === meal.recipeId);
+        console.log('Fetched Recipe:', recipe);
+        if (recipe) {
+          recipe.ingredients.forEach(ingredient => {
+            // Check if the ingredient is already in the set
+            if (!ingredientSet.has(ingredient.name)) {
+              ingredientSet.add(ingredient.name);
+              shoppingListData.items.push({
+                name: ingredient.name,
+                quantity: ingredient.quantity,
+                unit: ingredient.unit || "" // Ensure unit is included if applicable
+              });
+            }
+          });
+        }
+      });
+
+      console.log('Shopping List Data:', shoppingListData);
+
+      // Check if a shopping list already exists for this recipe
+      const existingShoppingLists = await fetchShoppingLists();
+      const existingList = existingShoppingLists.find(list => list.title === shoppingListData.title);
+
+      if (existingList) {
+        // Update the existing shopping list
+        const updatedItems = [...existingList.items, ...shoppingListData.items];
+        await updateShoppingList(existingList._id, { ...existingList, items: updatedItems });
+      } else {
+        // Create a new shopping list
+        await createShoppingList(shoppingListData.title, shoppingListData.items);
+      }
+
       // Update both states immediately
       setCurrentMealPlan(updatedMealPlan);
       setAllMealPlans(prev => prev.map(plan => 
@@ -188,7 +239,7 @@ const MealPlanner = () => {
       setMealsForSelectedDate(updatedMealsForDate);
       
       setSelectedRecipe(null); // Reset the recipe selection
-      showToast("Meal added to the plan!");
+      showToast("Meal added to the plan and shopping list updated!");
     } catch (error) {
       console.error("Error adding meal:", error);
       showToast("Error adding meal: " + error.message, 'error');
@@ -235,6 +286,8 @@ const MealPlanner = () => {
       showToast("Error deleting meal plan: " + error.message, 'error');
     }
   };
+
+  console.log('Selected Recipe:', selectedRecipe);
 
   return (
     <div className="meal-planner-page">

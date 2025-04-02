@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useShoppingLists } from '../hooks/useShoppingLists';
 import { Card, CardContent } from "../components/ShoppingList/Card";
 import { Button } from "../components/ShoppingList/Button";
 import { Input } from "../components/ShoppingList/Input";
@@ -6,50 +7,110 @@ import { Checkbox } from "../components/ShoppingList/Checkbox";
 // import { Trash } from "../components/ShoppingList/Trash";
 
 export default function ShoppingList() {
-  const [items, setItems] = useState([
-    { id: 1, name: "Flour", quantity: "2 cups", checked: false },
-    { id: 2, name: "Eggs", quantity: "3", checked: false },
-    { id: 3, name: "Milk", quantity: "1 cup", checked: false },
-  ]);
+  const { fetchShoppingLists, createShoppingList, updateShoppingList, deleteShoppingList } = useShoppingLists();
+  const [shoppingLists, setShoppingLists] = useState([]);
   const [newItem, setNewItem] = useState("");
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
-  const addItem = () => {
+  useEffect(() => {
+    const loadShoppingLists = async () => {
+      const lists = await fetchShoppingLists();
+      setShoppingLists(lists);
+    };
+    loadShoppingLists();
+  }, []);
+
+  const addItem = (listId) => {
     if (newItem.trim()) {
-      setItems([...items, { id: Date.now(), name: newItem, quantity: "", checked: false }]);
+      const updatedList = shoppingLists.map(list => {
+        if (list._id === listId) {
+          return {
+            ...list,
+            items: [...list.items, { name: newItem, quantity: "", checked: false }]
+          };
+        }
+        return list;
+      });
+      setShoppingLists(updatedList);
       setNewItem("");
+      // Update the shopping list in the backend
+      updateShoppingList(listId, updatedList.find(list => list._id === listId));
     }
   };
 
-  const removeItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
+  const toggleCheck = (listId, itemId) => {
+    const updatedList = shoppingLists.map(list => {
+      if (list._id === listId) {
+        return {
+          ...list,
+          items: list.items.map(item => item._id === itemId ? { ...item, checked: !item.checked } : item)
+        };
+      }
+      return list;
+    });
+    setShoppingLists(updatedList);
+    // Update the shopping list in the backend
+    updateShoppingList(listId, updatedList.find(list => list._id === listId));
   };
 
-  const toggleCheck = (id) => {
-    setItems(items.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
+  const removeItem = async (listId, itemId) => {
+    const updatedList = shoppingLists.map(list => {
+      if (list._id === listId) {
+        return {
+          ...list,
+          items: list.items.filter(item => item._id !== itemId)
+        };
+      }
+      return list;
+    });
+
+    const listToUpdate = updatedList.find(list => list._id === listId);
+    setShoppingLists(updatedList);
+    // Update the shopping list in the backend
+    await updateShoppingList(listId, listToUpdate);
+
+    // Check if the list is empty after removing the item
+    if (listToUpdate.items.length === 0) {
+      await deleteShoppingList(listId); // Delete the shopping list if empty
+      setShoppingLists(prev => prev.filter(list => list._id !== listId)); // Remove from state
+    }
   };
+
+  console.log('Selected Recipe:', selectedRecipe);
 
   return (
-    <Card className="p-4 w-full max-w-md mx-auto mt-6">
-      <CardContent>
-        <h2 className="text-xl font-bold mb-4">Shopping List</h2>
-        <div className="space-y-2">
-          {items.map(item => (
-            <div key={item.id} className="flex items-center justify-between p-2 border rounded-lg">
-              <div className="flex items-center gap-2">
-                <Checkbox checked={item.checked} onCheckedChange={() => toggleCheck(item.id)} />
-                <span className={`${item.checked ? "line-through text-gray-500" : ""}`}>{item.name} {item.quantity}</span>
+    <div className="shopping-list-page">
+      <h2 className="shopping-list-title">Your Shopping Lists</h2>
+      {shoppingLists.length === 0 ? (
+        <p className="no-shopping-lists">You don't have any shopping lists.</p>
+      ) : (
+        shoppingLists.map(list => (
+          <Card key={list._id} className="mb-4">
+            <CardContent>
+              <h3 className="text-lg font-semibold">{list.title}</h3>
+              <div className="space-y-2">
+                {list.items.map(item => (
+                  <div key={item._id} className="flex items-center justify-between p-2 border rounded-lg">
+                    <div className="flex items-center">
+                      <Checkbox className="checkbox" checked={item.checked} onCheckedChange={() => toggleCheck(list._id, item._id)} />
+                      <span className={`${item.checked ? "line-through text-gray-500" : ""}`}>
+                        {item.name} {item.quantity} {item.unit}
+                      </span>
+                    </div>
+                    <Button size="icon" variant="ghost" onClick={() => removeItem(list._id, item._id)}>
+                      ×
+                    </Button>
+                  </div>
+                ))}
               </div>
-              <Button size="icon" variant="ghost" onClick={() => removeItem(item.id)}>
-                {/* <Trash className="w-4 h-4 text-red-500" /> */}
-              </Button>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 flex gap-2">
-          <Input placeholder="Add an item..." value={newItem} onChange={(e) => setNewItem(e.target.value)} />
-          <Button onClick={addItem}>Add</Button>
-        </div>
-      </CardContent>
-    </Card>
+              <div className="mt-4 flex gap-2">
+                <Input placeholder="Add an item..." value={newItem} onChange={(e) => setNewItem(e.target.value)} />
+                <Button onClick={() => addItem(list._id)}>Add</Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      )}
+    </div>
   );
 }
