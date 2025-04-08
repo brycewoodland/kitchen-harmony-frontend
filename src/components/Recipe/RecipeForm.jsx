@@ -36,7 +36,15 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
     if (!validateForm()) return;
 
     // Proceed with adding the recipe
-    onAddRecipe({ title, description, ingredients, instructions, tags, imageUrl, isPublic });
+    onAddRecipe({ 
+      title, 
+      description, 
+      ingredients, 
+      instructions, 
+      tags, 
+      imageUrl, 
+      isPublic 
+    });
 
     // Reset form and navigate
     resetForm();
@@ -68,6 +76,16 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
     if (ingredients.length > 1) {
       setIngredients(ingredients.filter((_, i) => i !== index));
     }
+  };
+
+  const addTag = (tag) => {
+    if (tag && !tags.includes(tag)) {
+      setTags([...tags, tag]);
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
   return (
@@ -159,6 +177,28 @@ const RecipeForm = ({ onAddRecipe, closeModal }) => {
               className={errors.imageUrl ? 'invalid' : ''}
             />
             {errors.imageUrl && <span className="error">{errors.imageUrl}</span>}
+          </div>
+
+          <div>
+            <label>Tags:</label>
+            <input
+              type="text"
+              placeholder="Add a tag"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addTag(e.target.value);
+                  e.target.value = '';
+                }
+              }}
+            />
+            <div className="tags-list">
+              {tags.map((tag, index) => (
+                <span key={index} className="tag">
+                  {tag} <button type="button" onClick={() => removeTag(tag)}>x</button>
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="public-checkbox">

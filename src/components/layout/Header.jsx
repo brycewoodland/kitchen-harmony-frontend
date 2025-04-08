@@ -56,8 +56,8 @@ function NavbarNav() {
   );
 }
 
-function NavbarDropdown({ user }) {
-  const displayName = user?.fname && user?.lname ? `${user.fname} ${user.lname}` : user?.email;
+function NavbarDropdown({ userData }) {
+  const displayName = userData?.fname && userData?.lname ? `${userData.fname} ${userData.lname}` : userData?.email;
 
   return (
     <li className="nav-item dropdown">
@@ -122,7 +122,7 @@ function Header() {
           <div className="d-flex ms-auto">
             <ul className="navbar-nav">
               {isAuthenticated && userData ? (
-                <NavbarDropdown user={userData} />
+                <NavbarDropdown userData={userData} />
               ) : (
                 <li className="nav-item">
                   <LoginButton onClick={() => loginWithRedirect()} className="btn btn-primary" />

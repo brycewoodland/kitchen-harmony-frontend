@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useState } from 'react';
 import axios from 'axios';
 
-const API_URL = "https://kitchen-harmony-backend.onrender.com/mealplan";
+const API_URL = "http://localhost:3000/mealplan";
 
 export const useMealPlan = () => {
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();

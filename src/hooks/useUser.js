@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useCallback, useEffect, useRef } from "react";
 
-const API_BASE_URL = "https://kitchen-harmony-backend.onrender.com/users";
+const API_BASE_URL = "http://localhost:3000/users";
 
 export const useUsers = () => {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();

@@ -45,8 +45,8 @@ const MyRecipes = () => {
     if (!userId) return;
     const addedRecipe = await addRecipe(userId, newRecipe);
     if (addedRecipe) {
-      setRecipes((prev) => [...prev, addedRecipe]);
-      setShowForm(false);
+      setRecipes((prev) => [...prev, addedRecipe]); // Update the recipes state immediately
+      setShowForm(false); // Optionally close the form
     }
   };
 
@@ -64,10 +64,10 @@ const MyRecipes = () => {
   };
 
   const handleDeleteRecipe = async (recipeId) => {
-    if (!userId) return;
-    const success = await deleteRecipe(recipeId);
+    const success = await deleteRecipe(recipeId); // Only pass recipeId
     if (success) {
       setRecipes((prev) => prev.filter((recipe) => recipe._id !== recipeId));
+      setSelectedRecipe(null); // Close the modal
     }
   };
 
@@ -111,7 +111,12 @@ const MyRecipes = () => {
       {!showForm && (
         <div className="recipes-list row">
           {recipes.map((recipe) => (
-            <RecipeCard key={recipe._id} recipe={recipe} onClick={setSelectedRecipe} onDelete={handleDeleteRecipe} />
+            <RecipeCard 
+              key={recipe._id}
+              recipe={recipe} 
+              onClick={setSelectedRecipe} 
+              onDelete={handleDeleteRecipe} 
+            />
           ))}
         </div>
       )}
@@ -125,6 +130,7 @@ const MyRecipes = () => {
             setIsEditing(true);
             setEditableRecipe({ ...recipe });
           }}
+          onDelete={handleDeleteRecipe}
         />
       )}
 
@@ -132,7 +138,7 @@ const MyRecipes = () => {
         <RecipeEditForm
           editableRecipe={editableRecipe}
           onInputChange={(e) => setEditableRecipe({ ...editableRecipe, [e.target.name]: e.target.value })}
-          onIngredientChange={handleIngredientChange} // Pass the new function here
+          onIngredientChange={handleIngredientChange}
           onSave={handleUpdateRecipe}
           onCancel={handleCancelEdit}
         />
