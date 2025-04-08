@@ -1,49 +1,32 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-const API_BASE_URL = "http://localhost:3000/users"; // Adjust based on your backend
+const API_BASE_URL = "http://localhost:3000/users";
 
 export const useUsers = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+  const hasFetched = useRef(false);
 
-  const createUser = async (req, res) => {
-    try {
-        console.log("Received data:", req.body); // Log the incoming data
-
-        const { email, auth0Id } = req.body;  
-        if (!email || !auth0Id) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already exists" });
-        }
-
-        const newUserId = await getNextSequenceValue("userId");
-
-        const newUser = new User({ email, id: newUserId, auth0Id, recipes: [] });
-        await newUser.save();
-
-        res.status(201).json({ message: "User created successfully", user: newUser });
-    } catch (error) {
-        console.error("Error creating user:", error);
-        res.status(500).json({ message: "Error creating user", error: error.message });
-    }
-};
-
+  // Fetch user by Auth0 ID
   const getUserById = async (auth0Id) => {
     try {
       const accessToken = await getAccessTokenSilently();
-      console.log(accessToken);
-      const response = await fetch(`${API_BASE_URL}/auth0/${auth0Id}`, {
+      const cleanAuth0Id = auth0Id.replace(/[|]/g, '_');
+
+      const response = await fetch(`${API_BASE_URL}/auth0/${cleanAuth0Id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      if (!response.ok) throw new Error("User not found");
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null; // User not found
+        }
+        throw new Error("Failed to fetch user");
+      }
+
       return await response.json();
     } catch (error) {
       console.error("Error fetching user by ID:", error);
@@ -51,33 +34,92 @@ export const useUsers = () => {
     }
   };
 
+  // Create a new user
+  const createUser = async (userData) => {
+    try {
+      const accessToken = await getAccessTokenSilently();
+      const response = await fetch(`${API_BASE_URL}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error creating user:", errorData);
+        throw new Error(errorData.message || "Failed to create user");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
+  };
+
   const getOrCreateUser = useCallback(async (auth0Id, email) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/auth0/${auth0Id}`);
-        
-        if (response.status === 404) {
-            const createResponse = await fetch(`${API_BASE_URL}/users`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth0Id, email })
-            });
+      const accessToken = await getAccessTokenSilently();
+      const cleanAuth0Id = auth0Id.replace(/[|]/g, '_');
 
-            if (!createResponse.ok) {
-                console.error("Create user error:", await createResponse.json());
-                throw new Error("Failed to create user");
-            }
+      // Try to get existing user by Auth0 ID
+      const response = await fetch(`${API_BASE_URL}/auth0/${cleanAuth0Id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-            return await createResponse.json();
+      if (response.ok) {
+        // User exists, return the existing user
+        return await response.json();
+      } else if (response.status === 404) {
+        // User doesn't exist, check if the email is already registered
+        const emailResponse = await fetch(`${API_BASE_URL}/email/${email}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (emailResponse.ok) {
+          // Email exists, return the existing user
+          return await emailResponse.json();
         }
 
-        if (!response.ok) throw new Error("Failed to fetch user");
-        return await response.json();
-    } catch (error) {
-        console.error("Error:", error);
-        return null;
-    }
-}, []);
+        // Email does not exist, create new user
+        const createResponse = await fetch(`${API_BASE_URL}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            auth0Id: cleanAuth0Id,
+            email,
+            fname: '',
+            lname: '',
+            username: email.split('@')[0],
+            recipes: []
+          }),
+        });
 
+        if (!createResponse.ok) {
+          const errorData = await createResponse.json();
+          console.error("Error creating user:", errorData);
+          throw new Error(errorData.message || "Failed to create user");
+        }
+
+        return await createResponse.json();
+      } else {
+        throw new Error("Failed to fetch user");
+      }
+    } catch (error) {
+      console.error("Error in getOrCreateUser:", error);
+      throw error;
+    }
+  }, []);
 
   const getUserByEmail = async (email) => {
     try {
@@ -89,7 +131,13 @@ export const useUsers = () => {
         },
       });
 
-      if (!response.ok) throw new Error("User not found");
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null;
+        }
+        throw new Error("Failed to fetch user by email");
+      }
+
       return await response.json();
     } catch (error) {
       console.error("Error fetching user by email:", error);
@@ -109,11 +157,14 @@ export const useUsers = () => {
         body: JSON.stringify(updatedData),
       });
 
-      if (!response.ok) throw new Error("Failed to update user");
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+
       return await response.json();
     } catch (error) {
       console.error("Error updating user:", error);
-      return null;
+      throw error;
     }
   };
 
@@ -127,7 +178,10 @@ export const useUsers = () => {
         },
       });
 
-      if (!response.ok) throw new Error("Failed to delete user");
+      if (!response.ok) {
+        throw new Error("Failed to delete user");
+      }
+
       return true;
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -135,5 +189,51 @@ export const useUsers = () => {
     }
   };
 
-  return { createUser, getUserById, getOrCreateUser, getUserByEmail, updateUser, deleteUser };
+  useEffect(() => {
+    if (isAuthenticated && user && user.sub && user.email && !hasFetched.current) {
+      hasFetched.current = true; // Mark that we've started fetching data for this user
+
+      const { email, sub: auth0Id } = user;
+
+      console.log("Auth0 ID:", auth0Id);
+      console.log("Email:", email);
+
+      // Fetch user by Auth0 ID
+      getUserById(auth0Id)
+        .then((existingUser) => {
+          if (existingUser) {
+            console.log("User already exists:", existingUser);
+          } else {
+            // Create user with proper error handling
+            const newUserData = {
+              email,
+              auth0Id,
+              // Add any other required fields here
+            };
+
+            createUser(newUserData)
+              .then((newUser) => {
+                if (newUser) {
+                  console.log("User created:", newUser);
+                }
+              })
+              .catch((error) => {
+                console.error("Error creating user:", error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.error("Error checking user existence:", error);
+        });
+    }
+  }, [isAuthenticated, user, getUserById, createUser]);
+
+  return {
+    getUserById,
+    createUser,
+    getOrCreateUser,
+    getUserByEmail,
+    updateUser,
+    deleteUser
+  };
 };

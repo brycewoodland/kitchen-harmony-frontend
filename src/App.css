@@ -1465,3 +1465,45 @@ input:checked+.slider .slider-text:last-child {
   margin-right: 10px;
   /* Adjust this value as needed */
 }
+
+/** Toast css **/
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.toast.success {
+  background-color: #4CAF50; /* Green for success */
+}
+
+.toast.error {
+  background-color: #f44336; /* Red for error */
+}
+
+.close-toast {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -10,7 +10,6 @@ import MealList from '../components/MealPlanner/MealList';
 import CalendarView from '../components/MealPlanner/CalendarView';
 import Toast from '../components/Toast';
 import { useShoppingLists } from '../hooks/useShoppingLists';
-import { isSameDay } from 'date-fns'; // Import date-fns for date comparison
 
 const MealPlanner = () => {
   const { 
@@ -164,23 +163,18 @@ const MealPlanner = () => {
     const formattedDate = new Date(selectedDate);
     formattedDate.setHours(0, 0, 0, 0); // Reset time to midnight
 
-    // Create a simple meal object with minimal required data
+    // Create a meal object with the recipe and its ingredients
     const mealData = {
       recipeId: selectedRecipe._id,
       date: formattedDate.toISOString(),
-      title: selectedRecipe.title
+      title: selectedRecipe.title,
+      ingredients: selectedRecipe.ingredients // Include ingredients here
     };
 
     try {
       console.log('Adding meal to plan:', mealData);
       const updatedMealPlan = await addMealToPlan(mealPlanId, mealData);
       console.log('Updated meal plan:', updatedMealPlan);
-
-      // Gather ingredients from the current day and future meals
-      const allMeals = updatedMealPlan.meals.filter(meal => {
-        const mealDate = new Date(meal.date);
-        return mealDate >= new Date(); // Check if the meal date is today or in the future
-      });
 
       // Prepare shopping list data
       const shoppingListData = {
@@ -191,20 +185,14 @@ const MealPlanner = () => {
       // Create a Set to track unique ingredient names
       const ingredientSet = new Set();
 
-      allMeals.forEach(meal => {
-        const recipe = recipes.find(r => r._id === meal.recipeId);
-        console.log('Fetched Recipe:', recipe);
-        if (recipe) {
-          recipe.ingredients.forEach(ingredient => {
-            // Check if the ingredient is already in the set
-            if (!ingredientSet.has(ingredient.name)) {
-              ingredientSet.add(ingredient.name);
-              shoppingListData.items.push({
-                name: ingredient.name,
-                quantity: ingredient.quantity,
-                unit: ingredient.unit || "" // Ensure unit is included if applicable
-              });
-            }
+      // Add ingredients from the selected recipe to the shopping list
+      selectedRecipe.ingredients.forEach(ingredient => {
+        if (!ingredientSet.has(ingredient.name)) {
+          ingredientSet.add(ingredient.name);
+          shoppingListData.items.push({
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            unit: ingredient.unit || "" // Ensure unit is included if applicable
           });
         }
       });

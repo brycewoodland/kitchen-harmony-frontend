@@ -23,15 +23,26 @@ const LoginButton = () => {
           if (existingUser) {
             console.log("User already exists:", existingUser);
             setUserData(existingUser);
-          } else {
-            // User doesn't exist, create the user
-            createUser({ email, auth0Id }).then((newUser) => {
+            return; // Early return if user exists
+          }
+
+          // Create user with proper error handling
+          const newUserData = {
+            email,
+            auth0Id,
+            // Add any other required fields here
+          };
+          
+          createUser(newUserData)
+            .then((newUser) => {
               if (newUser) {
                 console.log("User created:", newUser);
                 setUserData(newUser);
               }
+            })
+            .catch((error) => {
+              console.error("Error creating user:", error);
             });
-          }
         })
         .catch((error) => {
           console.error("Error checking user existence:", error);

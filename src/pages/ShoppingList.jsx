@@ -4,7 +4,6 @@ import { Card, CardContent } from "../components/ShoppingList/Card";
 import { Button } from "../components/ShoppingList/Button";
 import { Input } from "../components/ShoppingList/Input";
 import { Checkbox } from "../components/ShoppingList/Checkbox";
-// import { Trash } from "../components/ShoppingList/Trash";
 
 export default function ShoppingList() {
   const { fetchShoppingLists, createShoppingList, updateShoppingList, deleteShoppingList } = useShoppingLists();
@@ -89,8 +88,8 @@ export default function ShoppingList() {
             <CardContent>
               <h3 className="text-lg font-semibold">{list.title}</h3>
               <div className="space-y-2">
-                {list.items.map(item => (
-                  <div key={item._id} className="flex items-center justify-between p-2 border rounded-lg">
+                {list.items.map((item, index) => (
+                  <div key={`${list._id}-${item.name}-${index}`} className="flex items-center justify-between p-2 border rounded-lg">
                     <div className="flex items-center">
                       <Checkbox className="checkbox" checked={item.checked} onCheckedChange={() => toggleCheck(list._id, item._id)} />
                       <span className={`${item.checked ? "line-through text-gray-500" : ""}`}>
