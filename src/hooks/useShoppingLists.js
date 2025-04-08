@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
-const API_URL = 'http://localhost:3000/shoppingLists';
+const API_URL = 'https://kitchen-harmony-backend.onrender.com/shoppingLists';
 
 export const useShoppingLists = () => {
     const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();

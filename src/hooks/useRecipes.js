@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 
-const API_BASE_URL = 'http://localhost:3000/recipe';
+const API_BASE_URL = 'https://kitchen-harmony-backend.onrender.com/recipe';
 
 export const useRecipes = () => {
   const { getAccessTokenSilently } = useAuth0();
