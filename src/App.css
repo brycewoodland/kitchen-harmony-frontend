@@ -244,6 +244,8 @@ input:checked+.slider .slider-text:last-child {
   height: 100vh;
   background-size: cover;
   background-position: center;
+  margin-bottom: 60px;
+  padding: 40px 0;
 }
 
 .hero-overlay {
@@ -310,6 +312,10 @@ input:checked+.slider .slider-text:last-child {
   animation: fadeIn 2s forwards;
 }
 
+.hero-container Link {
+  margin: 10px;
+}
+
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -332,7 +338,12 @@ input:checked+.slider .slider-text:last-child {
 
 /* Button hover animation */
 .hero-button {
-  transition: transform 0.3s ease-in-out;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  margin: 0;
+  padding: 10px 20px;
 }
 
 .hero-button:hover {
@@ -343,13 +354,14 @@ input:checked+.slider .slider-text:last-child {
 .cook-section {
   background-color: #ebebeb;
   min-height: 100vh;
-  margin: 0;
+  margin: 10px;
   padding: 0;
 }
 
 .cook-section-title {
   margin-top: 100px;
   padding: 30px;
+  margin-bottom: 20px;
 }
 
 .grid-container {
@@ -1481,11 +1493,13 @@ input:checked+.slider .slider-text:last-child {
 }
 
 .toast.success {
-  background-color: #4CAF50; /* Green for success */
+  background-color: #4CAF50;
+  /* Green for success */
 }
 
 .toast.error {
-  background-color: #f44336; /* Red for error */
+  background-color: #f44336;
+  /* Red for error */
 }
 
 .close-toast {
@@ -1502,6 +1516,7 @@ input:checked+.slider .slider-text:last-child {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
